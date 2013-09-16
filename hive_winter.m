@@ -54,7 +54,7 @@ function [yres, yV, yP, yH, yR] = hive_winter(year,aw,a,s,y,resIn,Vin,Pin,Hin,Ri
         
         Y = one_winter_day(Y,t);
         
-        wintpop = W*Y(5:end); %this is a 4xmaxagewinter matrix %this pieces causes second season crash- not just bad pic
+        wintpop = W*Y(5:end); %this is a problem for some reason
         res(1:3,(t-(yeardays*T+summerdays))) = wintpop(1:3);
         res(5,(t-(yeardays*T+summerdays))) = wintpop(4);
         
