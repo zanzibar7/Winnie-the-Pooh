@@ -10,37 +10,24 @@ end
 % First Season Summer Dynamics 
 
 agemax = 60; % +1 because of matlab indexing
+numyears = 2;
+summerdays = 240;
+yeardays = 360;
+agemaxwinter = 150; %max life of winter bee
 
 
-G = zeros(6,agemax);
-
-tx=240; % number of summer days of the year
-
-G(1,1:3)=1; G(2,4:11)=1; G(3,12:26)=1; G(4,27:42)=1;G(5,43:48)=1;G(6,49:agemax)=1;
-
-P0 = 200;
-%P0 = 1000; %initial cells of pollen
+P0 = 200; %P0 = 1000; %initial cells of pollen
 
 V0 = 300000 - P0; %intial vacant cells, total number cells is 140000
 %subtract to leave room for eggs and pollen
 
-H0=0; %initial  honey
+H0=0; %initial honey
 
-R0=0; %initial ...? egg laying?
+R0=0; %initial eggs
 
 N = zeros(agemax,1);
 
-N(1:3)=100; %  initial number of eggs/3 days
-%SHOULD BE ZERO, BUT THIS CAUSES CODE TO CRASH WITH ERROR "DEAD HIVE
-% Undefined function or variable "storedhoney".
-% 
-% Error in bees (line 177)
-% Ht1= min(V0,Ht-honeyeaten+storedhoney); % The net honey storage
-% at the end of the day.
-% 
-% Error in testNOP (line 110)
-% 		     X = bees(X,t);  % call to bees.m function, which
-%              outputs new state of hive"
+N(1:3)=100; %  initial number of eggs/3 days   %SHOULD BE ZERO, BUT THIS CAUSES CODE TO CRASH WITH ERROR "DEAD HIVE
 
 N(4:11)=200; % initial number of larva = 1600/8 days
 
@@ -54,19 +41,15 @@ N(49:agemax)=250; % initial number of forager bees = 3000 / 12 days
 
 X = [ V0; P0; H0;R0; N ]; % This hold the initial bee populion that goes into bees.m
 
-res=zeros(6,tx); % res will hold bee population by stage for each day of summer
+res=zeros(6,summerdays); % res will hold bee population by stage for each day of summer
 
-V=zeros(1,tx); %vector will hold # vacant cells for each day of summer
+V=zeros(1,summerdays); %vector will hold # vacant cells for each day of summer
 
-P=zeros(1,tx);
+P=zeros(1,summerdays);
 
-H=zeros(1,tx);
+H=zeros(1,summerdays);
 
-R=zeros(1,tx);
-
-numyears = 2;
-summerdays = 240;
-yeardays = 360;
+R=zeros(1,summerdays);
 
 %these super long vectors hold the vacant cells, pollen, honey, and egg
 %filled cells for every day of the years in our time series
@@ -85,51 +68,25 @@ Rpop=zeros(1,yeardays*numyears);
 %each year starts with a field season, goes through one winter, and then
 %one more field season
 for T = 0:(numyears-1) %T tells us what year we are in 0,1, 2...
-
-          %%%% TCR TODO: rename bees.m to hive_summer.m
           
-          for t=(yeardays*T+1):(yeardays*T+summerdays) %sets the date, goes through all field season days
-   
-		     X = bees(X,t);  % call to bees.m function, which outputs new state of hive
-              
-             %G is 6 x agemax, and X = [V,P,H,R,N]
-		     res(1:6,t-yeardays*T)=G*X(5:end); 
- 
-		     V(1,t-yeardays*T)= X(1);
-
-		     P(1,t-yeardays*T) = X(2);
-        
-             H(1,t-yeardays*T)= X(3);
-             % disp([t,X(3)]);
-
-		     R(1,t-yeardays*T)= X(4);
- 
-          end %END OF LOOP THROUGH THIS SUMMER
+    summerresults = hive_summer(T,agemax,summerdays,yeardays,res,V,P,H,R,X);
      
-	pop(:,(yeardays*T+1):(yeardays*T+summerdays))=res;
-    Vpop(:,(yeardays*T+1):(yeardays*T+summerdays))=V;
-    Ppop(:,(yeardays*T+1):(yeardays*T+summerdays))=P;
-    Hpop(:,(yeardays*T+1):(yeardays*T+summerdays))=H;
-    Rpop(:,(yeardays*T+1):(yeardays*T+summerdays))=R;
+	pop(:,(yeardays*T+1):(yeardays*T+summerdays)) = summerresults(1);
+    Vpop(:,(yeardays*T+1):(yeardays*T+summerdays)) = summerresults(2);
+    Ppop(:,(yeardays*T+1):(yeardays*T+summerdays)) = summerresults(3);
+    Hpop(:,(yeardays*T+1):(yeardays*T+summerdays)) = summerresults(4);
+    Rpop(:,(yeardays*T+1):(yeardays*T+summerdays)) = summerresults(5);
     
 
-    %%%% TCR TODO: This should be pulled out into a different function,
-    %%%% hive_winter.m
     
     % First Season Winter Dynamics 
-
-	agemaxwinter=150; %max life of winter bee
     
     winterresults = hive_winter(T,agemax,agemaxwinter,summerdays,yeardays,res,V,P,H,R);
     
 	pop(:, (yeardays*T+summerdays+1):(yeardays*(T+1))) = winterresults(1);
-    
     Vpop(1,(yeardays*T+summerdays+1):(yeardays*(T+1))) = winterresults(2);
-    
     Ppop(1,(yeardays*T+summerdays+1):(yeardays*(T+1))) = winterresults(3);
-    
     Hpop (1,(yeardays*T+summerdays+1):(yeardays*(T+1))) = winterresults(4);
-     
     Rpop (1,(yeardays*T+summerdays+1):(yeardays*(T+1))) = winterresults(5);
     
         
@@ -184,7 +141,7 @@ B=Hpop;  %honey storage throught all seasons
 YMatrix2= [A;B]';
  Y3=Rpop;
 %Y3=pop(3)*0.1552/1000+pop(4)*0.2189/1000+pop(5)*0.2189/1000+A+B;
-createfigure1(YMatrix1, YMatrix2, Y3); 
+timplot(YMatrix1, YMatrix2, Y3); 
  % figure;
 
 % plot(Y3);
@@ -194,7 +151,7 @@ createfigure1(YMatrix1, YMatrix2, Y3);
 % plot(Y1(1:360));
 % t=[0:30:360];months=['Jan';'Feb';'Mar';'Apr';'May';'Jun';'Jul';'Aug';'Sep';'Oct';'Nov';'Dec';];
 % set(gca,'xtick',t)
-% set(gca,'xticklabel',months)
+% set(gca,'xticklabel',months)wint
 % xlabel('Date')
 % ylabel('Colony Weight')
 % 
