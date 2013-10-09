@@ -287,5 +287,5 @@ Vt1 = Vt; % Vacant cells at end of the day - gets updated throughout file
 Nt1(1) = R; %R; %number of eggs laid today, these are now the age zero eggs
 
 nextstate = [Vt1; Pt1; Ht1; R; Nt1];
-
+ 
 return
