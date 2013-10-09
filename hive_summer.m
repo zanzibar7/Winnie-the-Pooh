@@ -21,13 +21,13 @@ function [yres, yV, yP, yH, yR] = hive_summer(year,a,s,y,resIn,Vin,Pin,Hin,Rin,X
 		     X = one_field_day(X,t);  % call to bees.m function, which outputs new state of hive
               
              %G is 6 x agemax, and X = [V,P,H,R,N]
-		     res(1:6,t-yeardays*T)=G*X(5:end); 
+		     res(1:6,t-yeardays*T)= G*X(5:end); %G*X(5:end); 
  
 		     V(1,t-yeardays*T)= X(1);
 
 		     P(1,t-yeardays*T) = X(2);
         
-             H(1,t-yeardays*T)= X(3);
+             H(1,t-yeardays*T) = X(3);
              % disp([t,X(3)]);
 
 		     R(1,t-yeardays*T)= X(4);
@@ -44,5 +44,6 @@ function [yres, yV, yP, yH, yR] = hive_summer(year,a,s,y,resIn,Vin,Pin,Hin,Rin,X
     
     yR = R;
     
+    return
     
 end
