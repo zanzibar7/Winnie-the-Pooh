@@ -22,7 +22,7 @@ s(4,27:agemaxwinter) = 1; %  test to combine the all the adult bees into one sta
 %% Abnormal developmental.(precocious+delayed development in bees)
 u = 0;%precocious prob
 v = 0;% reversed prob. between foragers and house bees;
-theta = 0*ones(agemaxwinter-1,1); % theta = probabilities of development retardation
+theta = .01*ones(agemaxwinter-1,1); % theta = probabilities of development retardation
 
 %% Hive Dynamics%
 %%%% Empty Cell+Pollen Cells + Honey Cells+Brood Cells =Hive Space
