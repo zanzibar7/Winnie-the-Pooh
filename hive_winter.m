@@ -10,9 +10,6 @@ function [yres, yV, yP, yH, yR] = hive_winter(year,aw,a,s,y,resIn,Vin,Pin,Hin,Ri
     V = Vin;
     H = Hin;
     R = Rin;
-	W = zeros(4,agemaxwinter);
-
-	W(1,1:3)=1; W(2,4:11)=1; W(3,12:26)=1; W(4,27:agemaxwinter)=1;
 
 	N = zeros(agemaxwinter,1);
 
@@ -54,9 +51,9 @@ function [yres, yV, yP, yH, yR] = hive_winter(year,aw,a,s,y,resIn,Vin,Pin,Hin,Ri
         
         Y = one_winter_day(Y,t);
         
-        wintpop = W*Y(5:end); %this is a problem for some reason
-        res(1:3,(t-(yeardays*T+summerdays))) = wintpop(1:3);
-        res(5,(t-(yeardays*T+summerdays))) = wintpop(4);
+        %wintpop = W*Yw; %this is a problem for some reason
+        res(1:3,(t-(yeardays*T+summerdays))) =  Y(1:3); %wintpop(1:3);
+        res(5,(t-(yeardays*T+summerdays))) = Y(4); %wintpop(4);
         
         V(1,(t-(yeardays*T+summerdays))) = Y(1);
         if Y(1)== 0
@@ -80,7 +77,7 @@ function [yres, yV, yP, yH, yR] = hive_winter(year,aw,a,s,y,resIn,Vin,Pin,Hin,Ri
         R(1,(t-(yeardays*T+summerdays))) = Y(4);
     end %END OF LOOP THROUGH WINTER
     
-	yres = res;
+	yres = res ;
     
     yV = V;
     
@@ -90,5 +87,6 @@ function [yres, yV, yP, yH, yR] = hive_winter(year,aw,a,s,y,resIn,Vin,Pin,Hin,Ri
     
     yR = R;
     
+    return
     
 end
