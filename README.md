@@ -8,7 +8,7 @@ In particular, the code is being reorganized so that it is more hierarchical in 
 
 Next step is to *make all parameters feed from simulator.m to other files
                 *fix whatever is wrong with winter- too many eggs, somehting is screwed up
-                *not enough honey or pollen in the current version
+                *not enough honey or pollen in the current version- is it just storage?
 
 
 Things I would like to potentially add to expand the model:
