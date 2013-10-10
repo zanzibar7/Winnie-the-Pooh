@@ -1,5 +1,22 @@
 % pre-compute honey foraging numbers, if needed
-if ( 0 == exist('hsurfX','var') ) 
+global hsurfX hsurfY hsurf;
+
+A = exist('hsurfX','file');
+disp('A=');
+disp(A);
+if ( 0 ~= A )
+	disp('Loading nector surface');
+	load(hsurfX);
+	load(hsurfY);
+	load(hsurf);
+else disp('no hsurf file')
+end
+
+E = exist('hsurfX','var');
+disp('E=');
+disp(E);
+if ( 0 == E || isempty(hsurf) ) 
+	disp('Precomputing nector surface');
     trialsurf;
 end
 
@@ -93,7 +110,6 @@ for T = 0:(numyears-1) %T tells us what year we are in 0,1, 2...
     [wintres,wintV,wintP,wintH,wintR] = hive_winter(T,agemax,agemaxwinter,summerdays,yeardays,res,V,P,H,R);
     
     res = wintres;
-    disp(res)
     V = wintV;
     P = wintP;
     H = wintH;

@@ -3,7 +3,7 @@
 %and Myerscough "Intelligent decisions from the Hive Mind." This file then calls on nectarODE
 %Notes on parameters: E+M wrote equations, and then they picked parameters which fit Seeley 1992 and 1995 data -aip
 
-function hy = honeycollection(initial) 
+function hy = honeycollection(s5,s6) 
  global fa fr fs mS mQ mT ss iQ rs k j m omega td Q nt; 
     
 
@@ -25,10 +25,10 @@ function hy = honeycollection(initial)
         td = 1; % 
        
 nt=8; %number of hours that foraging could be going on
-trange = [0:60:3600*nt]; %goes through and counts seconds by the minute
-       
-[t,y] = ode45(@nectarODE,trange,initial);
-
+trange = [0:60:3600*8];
+	initial=[0.8*s5+10,0.8*s5+10,1,0,0,0.8*s6];
+	[t,y] = ode45(@nectarODE,trange,initial);
+	hy=y(end,5); 
 
 
 hy=y(end,5); 
