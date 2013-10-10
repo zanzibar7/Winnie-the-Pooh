@@ -1,4 +1,4 @@
-function nextstate = winterbeesR(state,date) % For winter bee dynamics 
+function nextstate = one_winter_day(state,date) % For winter bee dynamics 
 
 agemaxwinter=150; % indexing in matlab starts at 1, so add an extra day
 
