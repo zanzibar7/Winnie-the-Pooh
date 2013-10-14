@@ -1,4 +1,4 @@
-function nextstate = bees(state,date)% bee model in the field season 
+function nextstate = one_field_day(state,date)% bee model in the field season 
 
 
 agemax=60; % indexing in matlab starts at 1, so add an extra day
