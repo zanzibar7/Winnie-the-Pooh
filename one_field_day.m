@@ -17,8 +17,8 @@ h1 = 0.0; %h1=0.12;
 h2 = 0; % h2=0.012; 
 h3 = 0;
 h4 = 0.0525; % h4=0.1;
-h5 = 0.045; % h5=0.1;
-h6 = 0.136; % h6 = 0.1;
+h5 = 0.036 ; %0.045; % h5=0.1;
+h6 = 0; %0.136; % h6 = 0.1;
 
 %Pollen consumption rates
 %a cellful of pollen weighs~~0.23g
@@ -246,29 +246,9 @@ Vt = Vt - storedfood ;
 % nectar collection is based on the interaction of current nectar forager and the house bees 
 % Nectar being processed into honey is reduced in volume by a factor .4
  
-% if stage(6) <= 1 
-%     disp('no foragers'); %I don't see why this is here... shouldn't house bees just take over this role?
-%     disp(date);
-%     predictedhoney=0;    
-% else
-%     %volume ratio of honey/nectar = 0.4
-%      predictedhoney = .4 * interp1(hsurfX,hsurf, stage(6)-PollenForager); 
-%      %disp(predictedhoney)
-%      
-%      %this one causes crazy errors and discontinuites
-%      %0.4*interp2(hsurfX,hsurfY,hsurf,0.8*stage(5),stage(6)-PollenForager);
-%      
-%      %this is the old, slow version
-% %     initial=[0.8*stage(5),0.8*stage(5),1,0,0,stage(6)-PollenForager]';
-% %     predictedhoney = honeycollection(initial);
-%         if predictedhoney == 0
-%             disp('interp function said no honey')
-%         end
-% 
-% end
-
 predictedhoney=interp2(hsurfX,hsurfY,hsurf,stage(5),stage(6));
-if ( 0==exist('storedhoney','var') || isnan(predictedhoney) || predictedhoney<0 )
+
+if ( 0==exist('predictedhoney','var') || isnan(predictedhoney) || predictedhoney<0 )
 	predictedhoney=1.e-3;
 end
 storedhoney = min([predictedhoney Vt]);
@@ -286,7 +266,7 @@ Vt = Vt - storedhoney ;
 %% Pollen, Honey, Cells net input 
 Pt = Pt - foodeaten + storedfood;
 Pt1 = max(0,Pt); % Updated pollen stores at end of day
-Ht1 = Ht + storedhoney; % Updated honey stores at end of day, capped by total size of hive
+Ht1 = Ht + storedhoney - honeyeaten % Updated honey stores at end of day, capped by total size of hive
 Vt1 = Vt; % Vacant cells at end of the day - gets updated throughout file  
 Nt1(1) = R; %R; %number of eggs laid today, these are now the age zero eggs
 
