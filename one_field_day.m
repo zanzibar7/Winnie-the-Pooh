@@ -246,7 +246,7 @@ Vt = Vt - storedfood ;
 % nectar collection is based on the interaction of current nectar forager and the house bees 
 % Nectar being processed into honey is reduced in volume by a factor .4
  
-predictedhoney=interp2(hsurfX,hsurfY,hsurf,stage(5),stage(6));
+predictedhoney=interp2(hsurfX,hsurfY,hsurf,stage(5),(stage(6)-PollenForager));
 
 if ( 0==exist('predictedhoney','var') || isnan(predictedhoney) || predictedhoney<0 )
 	predictedhoney=1.e-3;
@@ -266,7 +266,7 @@ Vt = Vt - storedhoney ;
 %% Pollen, Honey, Cells net input 
 Pt = Pt - foodeaten + storedfood;
 Pt1 = max(0,Pt); % Updated pollen stores at end of day
-Ht1 = Ht + storedhoney - honeyeaten % Updated honey stores at end of day, capped by total size of hive
+Ht1 = Ht + storedhoney - honeyeaten; % Updated honey stores at end of day, capped by total size of hive
 Vt1 = Vt; % Vacant cells at end of the day - gets updated throughout file  
 Nt1(1) = R; %R; %number of eggs laid today, these are now the age zero eggs
 
