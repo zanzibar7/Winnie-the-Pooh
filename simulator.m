@@ -1,14 +1,14 @@
 % pre-compute honey foraging numbers, if needed
 global hsurfX hsurfY hsurf;
 
-A = exist('hsurfX','file');
+A = exist('hsurfX.data','file');
 disp('A=');
 disp(A);
 if ( 0 ~= A )
 	disp('Loading nector surface');
-	load(hsurfX);
-	load(hsurfY);
-	load(hsurf);
+	load('hsurfX.data');
+	load('hsurfY.data');
+	load('hsurf.data');
 else disp('no hsurf file')
 end
 
@@ -27,7 +27,7 @@ end
 % First Season Summer Dynamics 
 
 agemax = 60; % +1 because of matlab indexing
-numyears = 2;
+numyears = 1;
 summerdays = 240;
 yeardays = 360;
 agemaxwinter = 150; %max life of winter bee
