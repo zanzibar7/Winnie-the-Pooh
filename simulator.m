@@ -76,10 +76,6 @@ Ppop=zeros(1,yeardays*numyears);
 Hpop=zeros(1,yeardays*numyears);
 Rpop=zeros(1,yeardays*numyears);
 
-%used for compression age structure from daily to by-class in winter
-W = zeros(4,agemaxwinter);
-W(1,1:3)=1; W(2,4:11)=1; W(3,12:26)=1; W(4,27:agemaxwinter)=1;
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% Simulation algorithm
@@ -106,22 +102,10 @@ for T = 0:(numyears-1) %T tells us what year we are in 0,1, 2...
     
     
     % First Season Winter Dynamics 
-    
+
     [wintres,wintV,wintP,wintH,wintR] = hive_winter(T,agemax,agemaxwinter,summerdays,yeardays,res,V,P,H,R);
     
-    res = wintres;
-    V = wintV;
-    P = wintP;
-    H = wintH;
-    R = wintR; 
-    
-    %res is now not compressed- numbers by day, not by class
-    %perform compression here 
-    %disp(res)
-    %wintpop = W*res; %col vect with four entries 
-%     disp (pop(:, (yeardays*T+summerdays+1):(yeardays*(T+1)))) %6 rows, 120 col
-    
-	pop(:, (yeardays*T+summerdays+1):(yeardays*(T+1))) = res;% catpop;
+	pop(:, (yeardays*T+summerdays+1):(yeardays*(T+1))) = wintres;% catpop;
     Vpop(1,(yeardays*T+summerdays+1):(yeardays*(T+1))) = wintV;
     Ppop(1,(yeardays*T+summerdays+1):(yeardays*(T+1))) = wintP;
     Hpop (1,(yeardays*T+summerdays+1):(yeardays*(T+1))) = wintH;
