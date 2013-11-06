@@ -33,7 +33,7 @@ Pt = state(2); % Pt for pollen cells at time t.  Formlerly F_t for food at time 
 Ht = state(3); % Ht for honey cells at time t. 
 R  = state(4); % Egg cells 
 Nt = state(5:end);% bee number at time t 
-length(Nt)
+
 %% Dynamics in the bee hive 
 stage = s*Nt; % 4 stages 
 
