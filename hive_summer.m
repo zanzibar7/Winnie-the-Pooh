@@ -14,11 +14,11 @@ function [yres, yV, yP, yH, yR] = hive_summer(year,a,s,y,resIn,Vin,Pin,Hin,Rin,X
     X = Xin;
     G = zeros(6,agemax);
 
-    G(1,1:3)=1; G(2,4:11)=1; G(3,12:26)=1; G(4,27:42)=1;G(5,43:48)=1;G(6,49:agemax)=1;
+    G(1,1:3)=1; G(2,4:8)=1; G(3,9:20)=1; G(4,21:32)=1;G(5,33:42)=1;G(6,42:agemax)=1;
 
           for t=(yeardays*T+1):(yeardays*T+summerdays) %sets the date, goes through all field season days
    
-		     X = one_field_day(X,t);  % call to bees.m function, which outputs new state of hive
+		     X = one_field_day(X,t,agemax);  % call to bees.m function, which outputs new state of hive
               
              %G is 6 x agemax, and X = [V,P,H,R,N]
 		     res(1:6,t-yeardays*T)= G*X(5:end); %G*X(5:end); 

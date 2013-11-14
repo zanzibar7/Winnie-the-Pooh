@@ -6,7 +6,7 @@ agemaxwinter=150; % indexing in matlab starts at 1, so add an extra day
 
 %% pollen consumption rate for each stage of bees during the winter 
 a2 = .005; % fraction of a cell's pollen consumed by a larva in one day
-a4 = 0; %.028; % fraction of a cell's pollen consumed by a nurse in one day
+a4 = 0;%.028; % fraction of a cell's pollen consumed by a nurse in one day
 
 %% honey consumption rate for each stage of bees during the winter
 h4 = 0.022; % fraction of a cell's honey consumed by a nurse bee in one day
@@ -14,9 +14,9 @@ h4 = 0.022; % fraction of a cell's honey consumed by a nurse bee in one day
 %% Stage Structure for field season bees-normal cycle 
 s = zeros(4,agemaxwinter);
 s(1,1:3) = 1; %egg
-s(2,4:11) = 1; %larva
-s(3,12:26) = 1; %pupa
-s(4,27:agemaxwinter) = 1; %  test to combine the all the adult bees into one stage 
+s(2,4:8) = 1; %larva
+s(3,9:20) = 1; %pupa
+s(4,21:agemaxwinter) = 1; %  test to combine the all the adult bees into one stage 
 
 
 %% Abnormal developmental.(precocious+delayed development in bees)
@@ -46,9 +46,9 @@ if stage(4)<=100  % The minimum number of hive bees in a winter colony (2000-300
 else  
     % I DO NOT UNDERSTAND THE BIOLOGY OF THIS PART
     survivorship (1:3) = max( 0, overall_P* ( 1 - max(0,1-Ht/(h4*stage(4)))));
-    survivorship(4:11) = max(0, overall_P*( 1 - max(0,1- Pt/(a2*stage(2))))*(1-max(0,1-Ht/(a4*stage(4))))); % Larval survival depends on the intrinsic mortality and pollen availibility 
-    survivorship (12:26) = max( 0, overall_P* ( 1 - max(0,1-Ht/(h4*stage(4)))));
-    survivorship(27:agemaxwinter)= max( 0, overall_P* ( 1 - max(0,1-Ht/(h4*stage(4))))); % the survival of the adult bees in the hive depends on the intrisic mortality and the food availibility 
+    survivorship(4:8) = max(0, overall_P*( 1 - max(0,1- Pt/(a2*stage(2))))*(1-max(0,1-Ht/(a4*stage(4))))); % Larval survival depends on the intrinsic mortality and pollen availibility 
+    survivorship (9:20) = max( 0, overall_P* ( 1 - max(0,1-Ht/(h4*stage(4)))));
+    survivorship(21:agemaxwinter)= max( 0, overall_P* ( 1 - max(0,1-Ht/(h4*stage(4))))); % the survival of the adult bees in the hive depends on the intrisic mortality and the food availibility 
 
 % survivorship (1:agemaxwinter) = overall_P;
 
@@ -66,7 +66,7 @@ polleneaten = min([Pt , a2*stage(2)+ a4*stage(4)]);
 
 vacated = Nt(26) + polleneaten + honeyeaten;
 
-scavangedcells = Nt(1:26)'*(1-survivorship(1:26));
+scavangedcells = Nt(1:20)'*(1-survivorship(1:20));
 
 %there should be NO egg laying in winter. The last eggs layed in summer are
 %super long-lived. this just sits in the survivorship function.
