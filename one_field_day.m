@@ -49,14 +49,35 @@ a6 = 0;
 % st5 = 0.913;%0.88; % 0.96-88.6%--survivorship for house bee stage 
 % st6 = 0.78; % 78.5%--survivorship for forager bee stage %0.653;%
 
-   % control survivorship
+%day of the year on which pesticide treatment was applied : 
+% August 1st 2012 = day 150
+% June 25th 2013 = day 115
+startdate = 241; 
+%enddate = 240; %day of the year on which pesticide treatment was no longer
+%in effect - probably end of field season
+
+if  date > startdate %&& date < enddate
+    
+    %Parameters for fungicide treatment effects
+    st1=(0.5)^(1/3); % 0.86--survivorship for egg stage
+    st2= (0.85)^(1/7); %---survivorship for larval stage
+    st3= (0.86)^(1/14);
+    st4= (0.85)^(1/16); % 0.99-85%--survivorship for nurse bee stage
+    st5=(0.85)^(1/6); % 0.96-88.6%--survivorship for house bee stage
+    st6=(0.78)^(1/12); % 78.5%--survivorship for forager bee stage
+    qh=0.5 ; %0.06;
+
+else
+    
     st1=(0.85)^(1/3); % 0.86--survivorship for egg stage
     st2= (0.85)^(1/7); %---survivorship for larval stage
     st3= (0.86)^(1/14);
     st4= (0.85)^(1/16); % 0.99-85%--survivorship for nurse bee stage
     st5=(0.85)^(1/6); % 0.96-88.6%--survivorship for house bee stage
     st6=(0.78)^(1/12); % 78.5%--survivorship for forager bee stage
-    
+    qh=1;
+end
+
 tel = 1; %0.98; %through-stage survival for egg maturing to 1st instar larva
 tlp = 1; %0.85; %through-stage survival for larva maturaing to pupa
 tpn = 1; %0.98; %through-stage survival for pupa maturing to nurse bee
