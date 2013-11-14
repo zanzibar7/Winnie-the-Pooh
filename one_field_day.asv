@@ -7,18 +7,26 @@ global hsurfX hsurfY hsurf; % the interpolated surface of NectarODE and honeycol
 
 u = 0; % probability of individual nurse bee precociously developing to forager
 v = 0; % reversed prob. between foragers and house bees;
-FactorBroodNurse = 4 ; % One nurse bee can heat 2.65 brood cells - NOT CRUCIAL.. but probably closer to 5
+FactorBroodNurse = 2.65 ; % One nurse bee can heat 2.65 brood cells - NOT CRUCIAL.. but probably closer to 5
 rt = 0; %probability of individual bee retardant developing to next age class
-qh = 1; %probability of ..? downregulation of queen egg laying of some sort
+
+qh = 1; %probability of ..? downregulation of queen egg laying of some sort, used in perturbed hive scenarios
 
 %Honey consumption rates
 % fraction of a cell's honey consumed by a bee in one day, a cellful of honey weighs~~0.5g
-h1 = 0.0; %h1=0.12; 
-h2 = 0; % h2=0.012; 
+% h2: Rotais says .0297 cells/day, HoPoMo has .008 cells/day
+% h3: Rotais says 0, HoPoMo has .008 cells/day (even those these get packed
+% in prior to capping
+% h4: Rotais says 0, which is weird
+% h5: Rotais says .038-.14 cells/day doing various tasks
+% h6: Rotais says .08-.32 cells/day for nectar forager, and .026 - .039
+% cells/day for pollen forager
+h1 = 0;
+h2 = 0.0297; 
 h3 = 0;
-h4 = 0.0525; % h4=0.1;
-h5 = 0.036 ; %0.045; % h5=0.1;
-h6 = 0; %0.136; % h6 = 0.1;
+h4 = 0; 
+h5 =  0.05 ; 
+h6 = 0.05; 
 
 %Pollen consumption rates
 %a cellful of pollen weighs~~0.23g
@@ -26,16 +34,17 @@ a1 = 0; % eggs don't consume pollen?
 a2 = 0.0047;% fraction of a cell's pollen consumed by a larva in one day
 a3 = 0; %capped brood don't consume pollen from stores
 a4 = 0.0283;% fraction of a cell's pollen consumed by a nurse bee in one day
-a5 = 0.017; % fraction of a cell's pollen removed by a house bee in one day
+a5 = 0; %0.017; % fraction of a cell's pollen removed by a house bee in one day
 a6 = 0; %foragers don't consume pollen
 
-st1 = 0.913;%0.5; % st1=0.86; % 0.86--survivorship for egg stage 
-st2 = 0.923;%0.5; % st2= 0.85; %---survivorship for larval stage 
-st3 = 0.985;%0.86; % suvivorship for -- survivorship for pupa stage
-st4 = 0.923;%0.85; % 0.99-85%--survivorship for nurse bee stage 
-st5 = 0.913;%0.88; % 0.96-88.6%--survivorship for house bee stage 
-st6 = 0.78; % 78.5%--survivorship for forager bee stage %0.653;%
+% st1 = 0.913;%0.5; % st1=0.86; % 0.86--survivorship for egg stage 
+% st2 = 0.923;%0.5; % st2= 0.85; %---survivorship for larval stage 
+% st3 = 0.985;%0.86; % suvivorship for -- survivorship for pupa stage
+% st4 = 0.923;%0.85; % 0.99-85%--survivorship for nurse bee stage 
+% st5 = 0.913;%0.88; % 0.96-88.6%--survivorship for house bee stage 
+% st6 = 0.78; % 78.5%--survivorship for forager bee stage %0.653;%
 
+   % control survivorship
     st1=(0.85)^(1/3); % 0.86--survivorship for egg stage
     st2= (0.85)^(1/7); %---survivorship for larval stage
     st3= (0.86)^(1/14);
@@ -43,11 +52,11 @@ st6 = 0.78; % 78.5%--survivorship for forager bee stage %0.653;%
     st5=(0.85)^(1/6); % 0.96-88.6%--survivorship for house bee stage
     st6=(0.78)^(1/12); % 78.5%--survivorship for forager bee stage
     
-tel = 0.98; %through-stage survival for egg maturing to 1st instar larva
-tlp = 0.85; %through-stage survival for larva maturaing to pupa
-tpn = 0.98; %through-stage survival for pupa maturing to nurse bee
-tnh = 0.98; %through stage survival for nurse bee maturing to house bee
-thf = 0.98; %through-stage survival for house been maturing to forager
+tel = 1; %0.98; %through-stage survival for egg maturing to 1st instar larva
+tlp = 1; %0.85; %through-stage survival for larva maturaing to pupa
+tpn = 1; %0.98; %through-stage survival for pupa maturing to nurse bee
+tnh = 1; %0.98; %through stage survival for nurse bee maturing to house bee
+thf = 1; %0.98; %through-stage survival for house been maturing to forager
 
 
  %% Stage Structure for field season bees-normal cycle: nonlinearities.1=egg,2=larvae,3=pupae,4=nurse,5=house,6=forager
@@ -99,22 +108,8 @@ IndexNursing = max(0,min(1,stage(4)/((stage(2)+stage(1))*FactorBroodNurse+1)));
 
 
 %% Bee Dynamics : Everyone ages by one day
-%except for the larva, these are all totally independant of what is going on in the hive.
-%In the older model version, there were effects of food availability, as
-%follows:
-% survivorship(1:3) = mt1; 
-% survivorship(4:11) = mt2*( 1 - max(0,1- Pt/(a2*stage(2))));
-% survivorship(12:26) = mt3; 
-% survivorship(27:42) = mt4* ( 1 - max(0,1- Pt/(a4*stage(4))-Ht/(h4*stage(4)))); 
-% survivorship(43:48) = mt5* ( 1 - max(0,1- Ht/(h5*stage(5))));
-% survivorship(49:agemax,1) = (1-v)*mt6;
-% survivorship = zeros(agemax,1);
-%going off of the above, I am changing the survivorships below to reflect
-%these ideas using Indexpollen and Indexhoney
 
 survivorship(1:3) = st1^(1/3); % the daily survival rate of egg stage at age(i=1-3) 
-
-survivorship(3:4) =tel*survivorship(2); % stage transitional rate egg to larva
 
 survivorship(4:11) = (st2*min(1,max(0,1-0.15*(1-Indexpollen*IndexNursing))))^(1/8); %  LARVA 
 % st2: the time independent base mortality rate of larval stage at any age (4-11 days old- total 8 days)
@@ -125,14 +120,9 @@ survivorship(4:11) = (st2*min(1,max(0,1-0.15*(1-Indexpollen*IndexNursing))))^(1/
 % rate and the cannibalism factor. 0.15--the time-independent base
 % cannibalism mortality rate for larval stage. 
 
-%stage transition rate LARVA to PUPA
-survivorship(11:12)=tlp*survivorship(10);
 
 % PUPA: st3 is overal stage survival, cummulative over 15 days
 survivorship(12:26)= st3^(1/15);
-
-% stage transition rate PUPA to NURSE bee
-survivorship(26:27)=tpn*survivorship(25) ;
 
 % NURSE: who don't precociously forage (1-u) and who survive one day of 16 that make up st4
 %It will be varied by the nursing efforts. A higher nursing load will
@@ -140,13 +130,9 @@ survivorship(26:27)=tpn*survivorship(25) ;
 survivorship(27:42)= (1-u)*(st4*max(0,min(1,1-IndexNursing)))^(1/16) ; %= (1-u)*st4^(1/16);
 % = (1-u)*(st4*max(0,min(1,1-IndexNursing)))^(1/16) ;
 % = (1-u)*max(0,(1-(1-st4)*IndexNurseload))^(1/16);
-%stage transition rate NURSE to HOUSE bee
-survivorship(42:43)=tnh*survivorship(41) ;
 
 %survivorship of HOUSE bee
 survivorship(43:48)= st5^(1/6);%(st5*min(1,1-Indexhoney))^(1/6);
-
-survivorship(48:49)=thf*survivorship(47);
 
 survivorship(49:agemax)= (1-v)*st6^(1/12); % v is reversed probability of the forager bee stage to revert back to in-hive nurse bees. 
 
