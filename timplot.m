@@ -106,7 +106,9 @@ W = (.047*YMatrix1(:, 2)+.158*YMatrix1(:, 3) + .133*(YMatrix1(:, 4)+YMatrix1(:, 
 plot(W,'Parent',axes3,'Marker','o','Color',[0 0 0]);
 
 % Create ylabel
-ylabel('Weight (kg)');
+ylabel('Weight (kg) - no equip');
+
+
 
 print -depsc output.eps
 

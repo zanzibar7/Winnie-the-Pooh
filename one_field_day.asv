@@ -7,7 +7,7 @@ global hsurfX hsurfY hsurf; % the interpolated surface of NectarODE and honeycol
 
 u = 0; % probability of individual nurse bee precociously developing to forager
 v = 0; % reversed prob. between foragers and house bees;
-FactorBroodNurse = 2.65 ; % One nurse bee can heat 2.65 brood cells - NOT CRUCIAL.. but probably closer to 5
+FactorBroodNurse = 4 ; % One nurse bee can heat 2.65 brood cells - NOT CRUCIAL.. but probably closer to 5
 rt = 0; %probability of individual bee retardant developing to next age class
 qh = 1; %probability of ..? downregulation of queen egg laying of some sort
 
@@ -17,7 +17,7 @@ h1 = 0.0; %h1=0.12;
 h2 = 0; % h2=0.012; 
 h3 = 0;
 h4 = 0.0525; % h4=0.1;
-h5 =  0.036 ; %0.045; % h5=0.1;
+h5 = 0.036 ; %0.045; % h5=0.1;
 h6 = 0; %0.136; % h6 = 0.1;
 
 %Pollen consumption rates
@@ -26,17 +26,16 @@ a1 = 0; % eggs don't consume pollen?
 a2 = 0.0047;% fraction of a cell's pollen consumed by a larva in one day
 a3 = 0; %capped brood don't consume pollen from stores
 a4 = 0.0283;% fraction of a cell's pollen consumed by a nurse bee in one day
-a5 = 0; %0.017; % fraction of a cell's pollen removed by a house bee in one day
+a5 = 0.017; % fraction of a cell's pollen removed by a house bee in one day
 a6 = 0; %foragers don't consume pollen
 
-% st1 = 0.913;%0.5; % st1=0.86; % 0.86--survivorship for egg stage 
-% st2 = 0.923;%0.5; % st2= 0.85; %---survivorship for larval stage 
-% st3 = 0.985;%0.86; % suvivorship for -- survivorship for pupa stage
-% st4 = 0.923;%0.85; % 0.99-85%--survivorship for nurse bee stage 
-% st5 = 0.913;%0.88; % 0.96-88.6%--survivorship for house bee stage 
-% st6 = 0.78; % 78.5%--survivorship for forager bee stage %0.653;%
+st1 = 0.913;%0.5; % st1=0.86; % 0.86--survivorship for egg stage 
+st2 = 0.923;%0.5; % st2= 0.85; %---survivorship for larval stage 
+st3 = 0.985;%0.86; % suvivorship for -- survivorship for pupa stage
+st4 = 0.923;%0.85; % 0.99-85%--survivorship for nurse bee stage 
+st5 = 0.913;%0.88; % 0.96-88.6%--survivorship for house bee stage 
+st6 = 0.78; % 78.5%--survivorship for forager bee stage %0.653;%
 
-   % control survivorship
     st1=(0.85)^(1/3); % 0.86--survivorship for egg stage
     st2= (0.85)^(1/7); %---survivorship for larval stage
     st3= (0.86)^(1/14);

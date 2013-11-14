@@ -35,7 +35,7 @@ agemaxwinter = 150; %max life of winter bee
 
 P0 = 200; %P0 = 1000; %initial cells of pollen
 
-V0 = 300000 - P0; %intial vacant cells, total number cells is 140000
+V0 = 500000 - P0; %intial vacant cells, total number cells is 140000
 %subtract to leave room for eggs and pollen
 
 H0=0; %initial honey
