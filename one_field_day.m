@@ -25,8 +25,8 @@ h1 = 0;
 h2 = 0.0297; 
 h3 = 0;
 h4 = 0; 
-h5 =  0.05 ; 
-h6 = 0.05; 
+h5 =  0.14 ; 
+h6 = 0.32; 
 
 %Pollen consumption rates
 %a cellful of pollen weighs~~0.23g
@@ -34,8 +34,8 @@ h6 = 0.05;
 %by brood, so this is an option with some flexibility.  Remember that
 %higher consumption means higher need, and thus more brought in.
 a1 = 0; 
-a2 = 0.0047;
-a3 = 0; 
+a2 = .037; %0.0047;
+a3 = .037; %0; 
 a4 = 0.028;
 a5 = 0; 
 a6 = 0; 
@@ -245,8 +245,9 @@ NeedPollenForager=PollenNeed/foragingsuccess;
 % make pollen foraging), even when there is almost no pollen need (personal
 % observation). The maximum number of pollen foragers is 33% of the current
 % cohort of foragers. 
-PollenForager=max(stage(6)*0.01, min(NeedPollenForager,stage(6)*.33)); %%THIS one seems like the right one! with the 33% cap!
-%PollenForager = max([stage(6)*0.01 min([NeedPollenForager stage(6)])]);
+
+%PollenForager=max(stage(6)*0.01, min(NeedPollenForager,stage(6)*.33)); %%THIS one seems like the right one! with the 33% cap!
+PollenForager = max([stage(6)*0.01 min([NeedPollenForager stage(6)])]);
 
 % pollen storage depends on the available cells in the hive
 % and the foraging collection efficiency of the pollen forager---assumption for pollen foraging behavior
@@ -265,7 +266,7 @@ Vt = Vt - storedfood ;
 % Nectar being processed into honey is reduced in volume by a factor .4
  
 predictedhoney=interp2(hsurfX,hsurfY,hsurf,stage(5),(stage(6)-PollenForager));
-
+%predictedhoney = 
 if ( 0==exist('predictedhoney','var') || isnan(predictedhoney) || predictedhoney<0 )
 	predictedhoney=1.e-3;
 end
@@ -282,8 +283,8 @@ Vt = Vt - storedhoney ;
 %     end
    
 %% Pollen, Honey, Cells net input 
-Pt = Pt - foodeaten + storedfood;
-Pt1 = max(0,Pt); % Updated pollen stores at end of day
+Pt1 = Pt - foodeaten + storedfood;
+%Pt1 = max(0,Pt); % Updated pollen stores at end of day
 Ht1 = Ht + storedhoney - honeyeaten; % Updated honey stores at end of day, capped by total size of hive
 Vt1 = Vt; % Vacant cells at end of the day - gets updated throughout file  
 Nt1(1) = R; %R; %number of eggs laid today, these are now the age zero eggs
