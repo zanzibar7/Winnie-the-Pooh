@@ -1,7 +1,6 @@
 %In progress
 function [yres, yV, yP, yH, yR] = hive_summer(year,a,s,y,resIn,Vin,Pin,Hin,Rin,Xin)
 
-
     agemax = a;
     summerdays = s;
     yeardays = y;

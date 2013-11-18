@@ -24,9 +24,9 @@ qh = 1; %probability of ..? downregulation of queen egg laying of some sort, use
 h1 = 0;
 h2 = 0.0297; 
 h3 = 0;
-h4 = 0; 
-h5 =  0.14 ; 
-h6 = 0.32; 
+h4 = 0.34; 
+h5 =  0.34 ; 
+h6 = 0.42; 
 
 %Pollen consumption rates
 %a cellful of pollen weighs~~0.23g
