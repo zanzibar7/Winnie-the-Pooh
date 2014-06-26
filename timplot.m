@@ -36,6 +36,7 @@ function timplot(YMatrix1, YMatrix2,Y1)
 
 % Create figure
 figure1 = figure(1); clf;
+fontsize=20;
 
 xdata=[0:30:1600];
 
@@ -46,7 +47,7 @@ axes1 = axes('Parent',figure1,...
     'XTickLabel',months,...
     'XTick',xdata,...
     'Position',[0.13 0.6409 0.8037 0.2891],...
-    'FontSize',11);
+    'FontSize',fontsize);
 box('on');
 hold on;
 
@@ -74,7 +75,8 @@ legend(axes1,'show');
 axes2 = axes('Parent',figure1,...
     'XTickLabel',months,...
     'XTick',xdata,...
-    'Position',[0.1294 0.302 0.8056 0.2597]);
+    'Position',[0.1294 0.302 0.8056 0.2597],...
+    'FontSize',fontsize);
 box('on');
 hold on;
 
@@ -96,7 +98,8 @@ legend(axes2,'show');
 axes3 = axes('Parent',figure1,...
     'XTickLabel',months,...
     'XTick',xdata,...
-    'Position',[0.1294 0.03867 0.805 0.2081]);
+    'Position',[0.1294 0.03867 0.805 0.2081],...
+    'FontSize',fontsize);
 box('on');
 %hold('all');
 
@@ -111,6 +114,8 @@ ylabel('Weight (kg) - no equip');
 
 
 print -depsc output.eps
+
+close()
 
 end 
 
