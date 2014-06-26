@@ -2,8 +2,6 @@
 global hsurfX hsurfY hsurf;
 
 A = exist('hsurfX.data','file');
-disp('A=');
-disp(A);
 if ( 0 ~= A )
 	disp('Loading nector surface');
 	load('hsurfX.data');
@@ -13,8 +11,6 @@ else disp('no hsurf file')
 end
 
 E = exist('hsurfX','var');
-disp('E=');
-disp(E);
 if ( 0 == E || isempty(hsurf) ) 
 	disp('Precomputing nector surface');
     trialsurf;
@@ -85,6 +81,9 @@ Rpop=zeros(1,yeardays*numyears);
 %each year starts with a field season, goes through one winter, and then
 %one more field season
 for T = 0:(numyears-1) %T tells us what year we are in 0,1, 2...
+
+    % First Season Summer Dynamics 
+    disp('First Season Summer Dynamics');
           
     [summres, summV,summP, summH, summR] = hive_summer(T,agemax,summerdays,yeardays,res,V,P,H,R,X);
      
@@ -102,6 +101,7 @@ for T = 0:(numyears-1) %T tells us what year we are in 0,1, 2...
     
     
     % First Season Winter Dynamics 
+    disp('First Season Winter Dynamics')
 
     [wintres,wintV,wintP,wintH,wintR] = hive_winter(T,agemax,agemaxwinter,summerdays,yeardays,res,V,P,H,R);
     
@@ -112,7 +112,8 @@ for T = 0:(numyears-1) %T tells us what year we are in 0,1, 2...
     Rpop (1,(yeardays*T+summerdays+1):(yeardays*(T+1))) = wintR;
     
         
-	%Second Season Summer Dynamics 
+	% Second Season Summer Dynamics 
+	disp('Second Season Summer Dynamics')
 
 	N = zeros(agemax,1);
 
@@ -157,6 +158,8 @@ end %END OF LOOP THROUGH MULTIPLE YEARS
 
 YMatrix1=pop';
 A=Ppop; %pollen storage throughout all seaseons
+% disp('pollen in kg, no equip')
+% disp(A'*.00023)
 B=Hpop;  %honey storage throught all seasons
 % A=Ppop.*0.23/1000;
 % B=Hpop*0.5/1000;

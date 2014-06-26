@@ -87,7 +87,7 @@ set(plot2(2),'DisplayName','Honey','Marker','o','LineStyle','none',...
 
 % Create ylabel
 ylabel('Number of Cells');
-ylim([0,2e5])
+ylim([0,3e5])
 
 % Create legend
 legend(axes2,'show');
