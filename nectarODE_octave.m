@@ -1,4 +1,4 @@
-function dy = nectarODE(T,y)
+function dy = nectarODE_octave(y,T)
 
    global qds fa fr fs mS mQ mT ss iQ rs k j m Q  omega tra; 
   
@@ -13,8 +13,7 @@ function dy = nectarODE(T,y)
     tra = 0;    % trembling abandonment
     % calculate search time (with default to prevent /0 errors)
 
-   
-       S = ss * (sum(y(2:2:end))) / (ssc * y(2)); % the expected search time 
+    S = ss * (sum(y(2:2:end))) / (ssc * y(2)); % the expected search time 
   
     d1= S^k + mS^k;
     d2= Q^j + mQ^j;
@@ -53,9 +52,7 @@ function dy = nectarODE(T,y)
     
     dy(4) = (y(3) - y(4))/fa - y(4)/ S; % the change in the forager population ready to unload the nectar within the hive=rate of arriving at the hive with nectar - rate of finding a receive and commencing unloading  
     
-    %dy(5) = y(4)/S*82/500; 
-    
-    dy(5) = y(4)/S*0.1; % <lifetime learning by foraging honey bees, Anim. Behavior. 1994>mean total daily forage uptake mg is 150 mg. assuming this is only contributed from nectar intake. average foraging time during a forager lifespan in a foraging season is ~3.5. 
+    dy(5) = y(4)/S*70/500; 
     
     dy(6)= 0 ; 
     
