@@ -1,4 +1,4 @@
-function nextstate = one_field_day(state,date,STAGEMATRIX)% bee model in the field season 
+function nextstate = one_summer_day(state,date,STAGEMATRIX)% bee model in the field season 
 
 global hsurfX hsurfY hsurf; % the interpolated surface of NectarODE and honeycollection 
 
@@ -154,10 +154,10 @@ A = (diag(1-theta,-1)+diag([0;theta]))*diag(survivorship);
 %% WARNING: explicit stage-structure dependence in code!!!!!!!!!!!!!!!!!!!!!
 
 B=zeros(agemax);% the precocious development of nurse bees 
-B(49,27:42)=p_precocious*ones(1,16);
+B(find(STAGEMATRIX(6,:))(1),:) = p_precocious*STAGEMATRIX(4,:);
 
 C=zeros(agemax);
-C(27,49:agemax)= p_reversion*ones(1,12); % the retarded development of forager bees 
+C(find(STAGEMATRIX(4,:))(1),:) = p_reversion*STAGEMATRIX(6,:); % the retarded development of forager bees 
 
 Nt1 = (A+B+C)*Nt; % structured dynamics for bees - output is a vector
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -10,7 +10,7 @@ function [S, V, P, H, R] = hive_summer(year, agemax, summerdays, yeardays,\
 
 	% LOOP THROUGH THIS SUMMER
 	for t=(yeardays*year+1):(yeardays*year+summerdays)
-		STATE = one_field_day(STATE, t, STAGEMATRIX); % new state of hive
+		STATE = one_summer_day(STATE, t, STAGEMATRIX); % new state of hive
 		S(1:6, t-yeardays*year) = STAGEMATRIX*STATE(5:end);
 		V(1, t-yeardays*year) = STATE(1);
 		P(1, t-yeardays*year) = STATE(2);

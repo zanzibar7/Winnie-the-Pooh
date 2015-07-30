@@ -29,32 +29,32 @@ function [S, V, P, H, R] = hive_winter(year, agemax, agemaxwinter, summerdays, \
 	S0(27:agemax) = (Sin(4)+Sin(5)+Sin(6))/(agemax-27+1);
     S0(agemax+1:end) = 0;
     
-    Y = [ V0; P0; H0; R0; S0];
+    STATE = [ V0; P0; H0; R0; S0];
 
     for t = (yeardays*year+summerdays+1):(yeardays*(year+1))
-        Y = one_winter_day(Y, t, WINTERSTAGEMATRIX);
+        STATE = one_winter_day(STATE, t, WINTERSTAGEMATRIX);
 
         i = t - (yeardays*year+summerdays);
-        V(1,i) = Y(1);
-        P(1,i) = Y(2);
-        H(1,i) = Y(3);
-        R(1,i) = Y(4);
+        V(1,i) = STATE(1);
+        P(1,i) = STATE(2);
+        H(1,i) = STATE(3);
+        R(1,i) = STATE(4);
         
-        stages = WINTERSTAGEMATRIX*Y(5:end);
+        stages = WINTERSTAGEMATRIX*STATE(5:end);
         
         S(1:3,i) = stages(1:3);
         S(5,i) = stages(4);
         
         %error checking
-		if Y(1)== 0
+		if STATE(1)== 0
 			disp(['ran out of space, on day: ',num2str(t)])
 			break
 		end
-		if Y(2) == 0
+		if STATE(2) == 0
 			disp(['Hive starved, no pollen, on day: ',num2str(t)])
 			break
 		end
-		if Y(3) == 0
+		if STATE(3) == 0
 			disp(['Hive starved, no honey, on day: ',num2str(t)])
 		end
 

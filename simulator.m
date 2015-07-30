@@ -27,8 +27,6 @@ end
 numyears = 3;
 summerdays = 240;
 yeardays = 360;
-agemax = 60; % max life of a summer bee, +1 because of matlab indexing
-agemaxwinter = 150; % max life of winter bee
 
 % timeseries vectors hold the daily counts for all time
 Spop=zeros(6,yeardays*numyears); % stage counts
@@ -37,6 +35,9 @@ Ppop=zeros(1,yeardays*numyears); % pollen
 Hpop=zeros(1,yeardays*numyears); % honey
 Rpop=zeros(1,yeardays*numyears); % egg production
 
+% old stages
+agemax = 60; % max life of a summer bee, +1 because of matlab indexing
+agemaxwinter = 150; % max life of winter bee
 STAGEMATRIX = zeros(6,agemax);
 STAGEMATRIX(1,1:3)=1;
 STAGEMATRIX(2,4:11)=1;
@@ -44,6 +45,18 @@ STAGEMATRIX(3,12:26)=1;
 STAGEMATRIX(4,27:42)=1;
 STAGEMATRIX(5,43:48)=1;
 STAGEMATRIX(6,49:agemax)=1;
+
+%%% new stages
+% agemax = 50; % max life of a summer bee, +1 because of matlab indexing
+% agemaxwinter = 150; % max life of winter bee
+% STAGEMATRIX = zeros(6,agemax);
+% STAGEMATRIX(1,1:3)=1;
+% STAGEMATRIX(2,4:8)=1;
+% STAGEMATRIX(3,9:20)=1;
+% STAGEMATRIX(4,21:32)=1;
+% STAGEMATRIX(5,33:42)=1;
+% STAGEMATRIX(6,43:agemax)=1;
+
 
 % initial number of eggs = 0/3 days   
 % initial number of larva = 1600/8 days
