@@ -153,4 +153,5 @@ timplot(YMatrix1, YMatrix2, Y3);
 
 format long;
 disp(sum(sum(Spop)));
+assert( abs(11058651.5313465 - sum(sum(Spop))) < 5e-8 );
 format short;
