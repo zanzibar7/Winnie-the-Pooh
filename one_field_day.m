@@ -56,25 +56,22 @@ startdate = 241;
 %in effect - probably end of field season
 
 if  date > startdate %&& date < enddate
-    
     %Parameters for fungicide treatment effects
-    st1=(0.5)^(1/3); % 0.86--survivorship for egg stage
-    st2= (0.85)^(1/7); %---survivorship for larval stage
-    st3= (0.86)^(1/14);
-    st4= (0.85)^(1/16); % 0.99-85%--survivorship for nurse bee stage
-    st5=(0.85)^(1/6); % 0.96-88.6%--survivorship for house bee stage
-    st6=(0.78)^(1/12); % 78.5%--survivorship for forager bee stage
-    qh=0.5 ; %0.06;
-
+    st1 = 0.50;
+    st2 = 0.85;
+    st3 = 0.86;
+    st4 = 0.85;
+    st5 = 0.85;
+    st6 = 0.78;
+    qh = 0.5; %0.06;
 else
-    
-    st1=(0.85)^(1/3); % 0.86--survivorship for egg stage
-    st2= (0.85)^(1/7); %---survivorship for larval stage
-    st3= (0.86)^(1/14);
-    st4= (0.85)^(1/16); % 0.99-85%--survivorship for nurse bee stage
-    st5=(0.85)^(1/6); % 0.96-88.6%--survivorship for house bee stage
-    st6=(0.78)^(1/12); % 78.5%--survivorship for forager bee stage
-    qh=1;
+    st1 = 0.85; % 0.86--survivorship for egg stage
+    st2 = 0.85; %---survivorship for larval stage
+    st3 = 0.86;
+    st4 = 0.85; % 0.99-85%--survivorship for nurse bee stage
+    st5 = 0.85; % 0.96-88.6%--survivorship for house bee stage
+    st6 = 0.78; % 78.5%--survivorship for forager bee stage
+    qh = 1;
 end
 
 tel = 1; %0.98; %through-stage survival for egg maturing to 1st instar larva
@@ -125,32 +122,32 @@ IndexNursing = max(0,min(1,stage(4)/((stage(2)+stage(1))*FactorBroodNurse+1)));
 
 %% Bee Dynamics : Everyone ages by one day
 
-survivorship(1:3) = st1^(1/3); % the daily survival rate of egg stage at age(i=1-3) 
+stageship = [st1, st2*min(1,max(0,1-0.15*(1-Indexpollen*IndexNursing))), st3, st4*max(0,min(1,1-IndexNursing)), st5, st6];
+survivorship = ([1,1,1,1-u,1,1-v].*(stageship.^(1./(STAGEMATRIX*ones(agemax,1)))'))*STAGEMATRIX;
 
-survivorship(4:11) = (st2*min(1,max(0,1-0.15*(1-Indexpollen*IndexNursing))))^(1/8); %  LARVA 
-% st2: the time independent base mortality rate of larval stage at any age (4-11 days old- total 8 days)
-% Larvae are frequently cannibalized in a honeybee colony.
-% The rate of cannibalism depends on the age of the larvae (Schmickl and Crailsheim, 2001),
-% the pollen status of the colony (Schmickl and Crailsheim, 2001)and the nursing quality (Eischen et al., 1982).
-% Therefore, larval mortality includes a time-independent base mortality
-% rate and the cannibalism factor. 0.15--the time-independent base
-% cannibalism mortality rate for larval stage. 
-
-
-% PUPA: st3 is overal stage survival, cummulative over 15 days
-survivorship(12:26)= st3^(1/15);
-
-% NURSE: who don't precociously forage (1-u) and who survive one day of 16 that make up st4
-%It will be varied by the nursing efforts. A higher nursing load will
-%cause a higher mortality of the nurse bee stage.
-survivorship(27:42)= (1-u)*(st4*max(0,min(1,1-IndexNursing)))^(1/16) ; %= (1-u)*st4^(1/16);
-% = (1-u)*(st4*max(0,min(1,1-IndexNursing)))^(1/16) ;
-% = (1-u)*max(0,(1-(1-st4)*IndexNurseload))^(1/16);
-
-%survivorship of HOUSE bee
-survivorship(43:48)= st5^(1/6);%(st5*min(1,1-Indexhoney))^(1/6);
-
-survivorship(49:agemax)= (1-v)*st6^(1/12); % v is reversed probability of the forager bee stage to revert back to in-hive nurse bees. 
+% survivorship(1:3) = st1^(1/3); % the daily survival rate of egg stage at age(i=1-3) 
+% survivorship(4:11) = (st2*min(1,max(0,1-0.15*(1-Indexpollen*IndexNursing))))^(1/8); %  LARVA 
+% % st2: the time independent base mortality rate of larval stage at any age (4-11 days old- total 8 days)
+% % Larvae are frequently cannibalized in a honeybee colony.
+% % The rate of cannibalism depends on the age of the larvae (Schmickl and Crailsheim, 2001),
+% % the pollen status of the colony (Schmickl and Crailsheim, 2001)and the nursing quality (Eischen et al., 1982).
+% % Therefore, larval mortality includes a time-independent base mortality
+% % rate and the cannibalism factor. 0.15--the time-independent base
+% % cannibalism mortality rate for larval stage. 
+% survivorship(12:26)= st3^(1/15);
+% % PUPA: st3 is overal stage survival, cummulative over 15 days
+% 
+% % NURSE: who don't precociously forage (1-u) and who survive one day of 16 that make up st4
+% %It will be varied by the nursing efforts. A higher nursing load will
+% %cause a higher mortality of the nurse bee stage.
+% survivorship(27:42)= (1-u)*(st4*max(0,min(1,1-IndexNursing)))^(1/16) ; %= (1-u)*st4^(1/16);
+% % = (1-u)*(st4*max(0,min(1,1-IndexNursing)))^(1/16) ;
+% % = (1-u)*max(0,(1-(1-st4)*IndexNurseload))^(1/16);
+% 
+% %survivorship of HOUSE bee
+% survivorship(43:48)= st5^(1/6);%(st5*min(1,1-Indexhoney))^(1/6);
+% 
+% survivorship(49:agemax)= (1-v)*st6^(1/12); % v is reversed probability of the forager bee stage to revert back to in-hive nurse bees. 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
