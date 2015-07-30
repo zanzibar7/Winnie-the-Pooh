@@ -2,6 +2,8 @@
 % pre-compute honey foraging numbers, if needed
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+clear all;
+
 global hsurfX hsurfY hsurf;
 
 if ( 0 ~= exist('hsurf.data','file') )
@@ -73,41 +75,48 @@ Rpop=zeros(1,yeardays*numyears);
 for year = 0:(numyears-1) 
 	disp(['Year ',num2str(year)]);
 
+	% precalculate indexes
+	i = yeardays*year+1;
+	j = yeardays*year+summerdays;
+	k = j+1;
+	l = yeardays*(year+1);
+
+
 	disp('    Summer Season Dynamics'); %%%%%%%%%%%%%%%%%%%%
 
 	[S, V, P, H, R] = \
 		hive_summer(year, agemax, summerdays, yeardays, STATE0, STAGEMATRIX);
 
-	Spop(:,(yeardays*year+1):(yeardays*year+summerdays)) = S;
-	Vpop(:,(yeardays*year+1):(yeardays*year+summerdays)) = V;
-	Ppop(:,(yeardays*year+1):(yeardays*year+summerdays)) = P;
-	Hpop(:,(yeardays*year+1):(yeardays*year+summerdays)) = H;
-	Rpop(:,(yeardays*year+1):(yeardays*year+summerdays)) = R;
+	Spop(:,i:j) = S;
+	Vpop(:,i:j) = V;
+	Ppop(:,i:j) = P;
+	Hpop(:,i:j) = H;
+	Rpop(:,i:j) = R;
 
 	disp('    Winter Season Dynamics'); %%%%%%%%%%%%%%%%%%%%
 
 	[wintS,wintV,wintP,wintH,wintR] = \
 		hive_winter(year,agemax,agemaxwinter,summerdays,yeardays,S,V,P,H,R);
 
-	Spop(:,(yeardays*year+summerdays+1):(yeardays*(year+1))) = wintS;
-	Vpop(1,(yeardays*year+summerdays+1):(yeardays*(year+1))) = wintV;
-	Ppop(1,(yeardays*year+summerdays+1):(yeardays*(year+1))) = wintP;
-	Hpop(1,(yeardays*year+summerdays+1):(yeardays*(year+1))) = wintH;
-	Rpop(1,(yeardays*year+summerdays+1):(yeardays*(year+1))) = wintR;
+	Spop(:,k:l) = wintS;
+	Vpop(1,k:l) = wintV;
+	Ppop(1,k:l) = wintP;
+	Hpop(1,k:l) = wintH;
+	Rpop(1,k:l) = wintR;
 
 	disp('    Setting up next Summer Season'); %%%%%%%%%%%%%%%%%%%
 
 	N = zeros(agemax,1);
-	N(1:3) = Spop(1,yeardays*(year+1))/3;
-	N(4:11) = Spop(2,yeardays*(year+1))/8;
-	N(12:26) = Spop(3,yeardays*(year+1))/15;
-	N(27:42) = Spop(5,yeardays*(year+1))/34;
-	N(43:48) = Spop(5,yeardays*(year+1))/34 ;
-	N(49:agemax) = Spop(5,yeardays*(year+1))/34;
-	P0 = Ppop(1,yeardays*(year+1));
-	V0 = Vpop(1,yeardays*(year+1));
-	R0= Rpop(1,yeardays*(year+1));
-	H0= Hpop(1,yeardays*(year+1)); 
+	N(1:3) = Spop(1,l)/3;
+	N(4:11) = Spop(2,l)/8;
+	N(12:26) = Spop(3,l)/15;
+	N(27:42) = Spop(5,l)/34;
+	N(43:48) = Spop(5,l)/34 ;
+	N(49:agemax) = Spop(5,l)/34;
+	P0 = Ppop(1,l);
+	V0 = Vpop(1,l);
+	R0= Rpop(1,l);
+	H0= Hpop(1,l); 
 
 	STATE0 = [ V0; P0; H0; R0; N];
 end %END OF LOOP THROUGH MULTIPLE YEARS
