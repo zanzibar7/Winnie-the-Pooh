@@ -57,12 +57,6 @@ end
 
 STATE0 = [V0; P0; H0; R0; N]; % This hold the initial state
 
-S=zeros(6,summerdays); % bee population by stage for each day of summer 
-V=zeros(1,summerdays); % # vacant cells for each day of summer 
-P=zeros(1,summerdays); % # pollen cells for each day of summer
-H=zeros(1,summerdays); % # honey cells for each day of summer
-R=zeros(1,summerdays); % # eggs for each day of summer
-
 % these super long vectors hold the daily vacant cells, pollen, honey, and egg
 % filled cells for every year in our simulation
 Spop=zeros(6,yeardays*numyears);
@@ -85,8 +79,7 @@ for T = 0:(numyears-1) %T tells us what year we are in 0,1, 2...
 	disp('    Summer Season Dynamics');
 
 	[S, V, P, H, R] = \
-		hive_summer(T, agemax, summerdays, yeardays, S, V, P, H, R, \
-			STATE0, STAGEMATRIX);
+		hive_summer(T, agemax, summerdays, yeardays, STATE0, STAGEMATRIX);
 
 	Spop(:,(yeardays*T+1):(yeardays*T+summerdays)) = S;
 	Vpop(:,(yeardays*T+1):(yeardays*T+summerdays)) = V;

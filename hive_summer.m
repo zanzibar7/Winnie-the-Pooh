@@ -1,5 +1,12 @@
-function [S, V, P, H, R] = hive_summer(year, agemax, summerdays, \
-	yeardays, S, V, P, H, R, STATE, STAGEMATRIX)
+function [S, V, P, H, R] = hive_summer(year, agemax, summerdays, yeardays,\
+	STATE, STAGEMATRIX)
+
+	S=zeros(6,summerdays); % bee population by stage for each day of summer 
+	V=zeros(1,summerdays); % # vacant cells for each day of summer 
+	P=zeros(1,summerdays); % # pollen cells for each day of summer
+	H=zeros(1,summerdays); % # honey cells for each day of summer
+	R=zeros(1,summerdays); % # eggs for each day of summer
+
 	% LOOP THROUGH THIS SUMMER
 	for t=(yeardays*year+1):(yeardays*year+summerdays)
 		% loop sets the date, goes through all field season days
