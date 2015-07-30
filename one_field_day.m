@@ -31,6 +31,19 @@ honeyconsumption = [ 0, 0.0297, 0, 0, 0.05 , 0.05 ];
 pollenconsumption = [0, 0.0047, 0, 0.028, 0, 0 ];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% %% Current conditions in bee hive %%%%%%%%
+Vt = state(1); % vacant cells 
+Pt = state(2); % pollen stores
+Ht = state(3); % honey stores at time t. 
+% We don't care about state(4), because those are now the 1-day old eggs,
+% and the new state(4) will only depend on how many eggs are layed now.
+Nt = state(5:end);% bee number at time t 
+stage = STAGEMATRIX*Nt;
+
+%% Queen reproduction potential (McLellan et al., 1978)
+relativedate = mod(date,360);  %% BUG!!! hard-coded dependence on year length
+maxProduction = (0.0000434)*(relativedate)^4.98293*exp(-0.05287*relativedate);
+
 %% SURVIVORSHIP PARAMETERS
 % st1 = 0.913;%0.5; % st1=0.86; % 0.86--survivorship for egg stage 
 % st2 = 0.923;%0.5; % st2= 0.85; %---survivorship for larval stage 
@@ -45,44 +58,34 @@ pollenconsumption = [0, 0.0047, 0, 0.028, 0, 0 ];
 % tpn = 1; %0.98; %through-stage survival for pupa maturing to nurse bee
 % tnh = 1; %0.98; %through stage survival for nurse bee maturing to house bee
 % thf = 1; %0.98; %through-stage survival for house been maturing to forager
- 
-%day of the year on which pesticide treatment was applied : 
-% August 1st 2012 = day 150
-% June 25th 2013 = day 115
-startdate = 241; 
-%enddate = 240; %day of the year on which pesticide treatment was no longer
-%in effect - probably end of field season
 
-% BUG!!!! current date calculation does not allow for multiple years
-if  date > startdate %&& date < enddate
-    %Parameters for fungicide treatment effects
-	stageship = [0.50, 0.85, 0.86, 0.85, 0.85, 0.78];
-    qh = 0.5; %0.06;
-else
-    % st1 = 0.85; % 0.86--survivorship for egg stage
-    % st2 = 0.85; %---survivorship for larval stage
-    % st3 = 0.86;
-    % st4 = 0.85; % 0.99-85%--survivorship for nurse bee stage
-    % st5 = 0.85; % 0.96-88.6%--survivorship for house bee stage
-    % st6 = 0.78; % 78.5%--survivorship for forager bee stage
-	stageship = [0.85, 0.85, 0.86, 0.85, 0.85, 0.78];
-    qh = 1;
-end
+% st1 = 0.85; % 0.86--survivorship for egg stage
+% st2 = 0.85; %---survivorship for larval stage
+% st3 = 0.86;
+% st4 = 0.85; % 0.99-85%--survivorship for nurse bee stage
+% st5 = 0.85; % 0.96-88.6%--survivorship for house bee stage
+% st6 = 0.78; % 78.5%--survivorship for forager bee stage
+
+stageship = [0.85, 0.85, 0.86, 0.85, 0.85, 0.78];
+qh = 1;
 
 
- 
-% %% Current conditions in bee hive %%%%%%%%
-Vt = state(1); % vacant cells 
-Pt = state(2); % pollen stores
-Ht = state(3); % honey stores
-% We don't care about state(4), because those are now the 1-day old eggs,
-% and the new state(4) will only depend on how many eggs are layed now.
-Nt = state(5:end);% bee number at time t 
-stage = STAGEMATRIX*Nt;
+%  %%%%%%%%%%% Fungicide treatments
+%  %day of the year on which pesticide treatment was applied : 
+%  % August 1st 2012 = day 150
+%  % June 25th 2013 = day 115
+%  startdate = 241; 
+%  enddate = 242; %day of the year on which pesticide treatment was no longer
+%  %in effect - probably end of field season
+%  
+%  if  date == startdate %  && date < enddate
+%      %Parameters for fungicide treatment effects
+%  	stageship = [0.50, 0.85, 0.86, 0.85, 0.85, 0.78];
+%      qh = 0.5; %0.06;
+%  end
 
-%% Queen reproduction potential (McLellan et al., 1978)
-relativedate = mod(date,360);  %% BUG!!! hard-coded dependence on year length
-maxProduction = (0.0000434)*(relativedate)^4.98293*exp(-0.05287*relativedate);
+
+
 
 %% Index for the quality of pollen status and nursing quality in the colony
 % Negative feedback loops of pollen stores and nursing quality in affecting

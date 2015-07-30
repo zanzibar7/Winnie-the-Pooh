@@ -146,6 +146,6 @@ timplot(YMatrix1, YMatrix2, Y3);
 % TESTING
 format long;
 disp(sum(sum(Spop)));
-testval = 11058681.1110574;
+testval = 20329600.2833733;
 assert( abs( testval - sum(sum(Spop))) < 5e-8 );
 format short;
