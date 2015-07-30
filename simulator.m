@@ -68,8 +68,9 @@ Rpop=zeros(1,yeardays*numyears);
 %
 % Simulation algorithm
 %
-% Each year starts with a field season, goes through one winter,
-% and then sets up the next field season
+% Each year starts with a field season, goes 
+% through one winter, and then sets up the next
+% field season.
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 for year = 0:(numyears-1) 
