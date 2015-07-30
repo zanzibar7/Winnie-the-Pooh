@@ -22,7 +22,7 @@ end
 %%%% Intializations
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-numyears = 6;
+numyears = 3;
 summerdays = 240;
 yeardays = 360;
 agemax = 60; % max life of a summer bee, +1 because of matlab indexing
@@ -151,3 +151,6 @@ timplot(YMatrix1, YMatrix2, Y3);
 % ylabel('Colony Weight')
 % 
 % BNy=(BARatio+FARatio)';
+format long;
+disp(sum(sum(Spop)));
+format short;
