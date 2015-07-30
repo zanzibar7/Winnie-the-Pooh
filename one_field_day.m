@@ -1,9 +1,8 @@
-function nextstate = one_field_day(state,date)% bee model in the field season 
-
-
-agemax=60; % indexing in matlab starts at 1, so add an extra day
+function nextstate = one_field_day(state,date,STAGEMATRIX)% bee model in the field season 
 
 global hsurfX hsurfY hsurf; % the interpolated surface of NectarODE and honeycollection 
+
+agemax = max(size(STAGEMATRIX)); % indexing in matlab starts at 1, so add an extra day
 
 u = 0; % probability of individual nurse bee precociously developing to forager
 v = 0; % reversed prob. between foragers and house bees;
@@ -85,15 +84,6 @@ tnh = 1; %0.98; %through stage survival for nurse bee maturing to house bee
 thf = 1; %0.98; %through-stage survival for house been maturing to forager
 
 
- %% Stage Structure for field season bees-normal cycle: nonlinearities.1=egg,2=larvae,3=pupae,4=nurse,5=house,6=forager
-s = zeros(6,agemax);
-s(1,1:3) = 1;% 
-s(2,4:11) = 1;
-s(3,12:26) = 1;
-s(4,27:42) = 1;
-s(5,43:48) = 1;
-s(6,49:agemax) = 1;
-
 %% Current conditions in bee hive %%%%%%%%
 Vt = state(1); % vacant cells 
 Pt = state(2); %  pollen stores at time t. 
@@ -101,7 +91,7 @@ Ht = state(3);%  honey stores at time t.
 % We don't care about state(4), because those are now the 1-day old eggs,
 % and the new state(4) will only depend on how many eggs are layed now.
 Nt = state(5:end);% bee number at time t 
-stage = s*Nt;
+stage = STAGEMATRIX*Nt;
 
 %% Queen reproduction potential (McLellan et al., 1978)
 relativedate = mod(date,360);
@@ -162,23 +152,27 @@ survivorship(43:48)= st5^(1/6);%(st5*min(1,1-Indexhoney))^(1/6);
 
 survivorship(49:agemax)= (1-v)*st6^(1/12); % v is reversed probability of the forager bee stage to revert back to in-hive nurse bees. 
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Everything here just relates to storage and matrix multiplication.
+theta = rt*ones(agemax-1,1); % theta = probabilities of retarded development at each stage
+	%all zeros right now
+% A is a matrix that stores the survival rate for each stage
 
-        theta = rt*ones(agemax-1,1); % theta = probabilities of retarded development at each stage
-        %all zeros right now
+A = (diag(1-theta,-1)+diag([0;theta]))*diag(survivorship);
 
-        % A is a matrix that stores the survival rate for each stage
-        A = (diag(1-theta,-1)+diag([0;theta]))*diag(survivorship);
+%% WARNING: explicit stage-structure dependence in code!!!!!!!!!!!!!!!!!!!!!
 
-        B=zeros(agemax);% the precocious development of nurse bees 
-        B(49,27:42)=u*ones(1,16);
+B=zeros(agemax);% the precocious development of nurse bees 
+B(49,27:42)=u*ones(1,16);
 
-        C=zeros(agemax);
-        C(27,49:agemax)= v*ones(1,12); % the retarded development of forager bees 
-        transit=A+B+C; 
+C=zeros(agemax);
+C(27,49:agemax)= v*ones(1,12); % the retarded development of forager bees 
 
-        Nt1 = transit*Nt; % structured dynamics for bees - output is a vector
+Nt1 = (A+B+C)*Nt; % structured dynamics for bees - output is a vector
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 
 %% Food is consumed, new eggs are layed
 
@@ -218,10 +212,10 @@ else
 end 
 %UPDATE VACANT CELL COUNT
 Vt = Vt - R ;
-    if Vt == 0
-            disp('ran out of space after eggs laid')
-            disp(date)
-    end
+if Vt == 0
+	disp('ran out of space after eggs laid')
+	disp(date)
+end
 
 %% POLLEN FORAGING- field season
 
@@ -254,10 +248,10 @@ storedfood = max([0 min([PollenForager*0.48 Vt])]);
 
 %UPDATE VACANT CELL COUNT
 Vt = Vt - storedfood ;
-    if Vt == 0
-            disp('ran out of space after food stored')
-            disp(date)
-    end
+if Vt == 0
+	disp('ran out of space after food stored')
+	disp(date)
+end
 
 %% Honey dynamics-field season 
 % Reference: Edwards and Myerscough 2011 , nectarODE.m called here
