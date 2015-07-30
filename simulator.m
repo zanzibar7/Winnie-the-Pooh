@@ -43,9 +43,9 @@ N(27:42)=187; % initial number of nurse bees = 3000/16 days
 N(43:48)=500; % initial number of house bees= 3000/ 6 days
 N(49:agemax)=250; % initial number of forager bees = 3000 / 12 days
 
-X = [V0; P0; H0; R0; N]; % This hold the initial state
+STATE0 = [V0; P0; H0; R0; N]; % This hold the initial state
 
-res=zeros(6,summerdays); % bee population by stage for each day of summer 
+S=zeros(6,summerdays); % bee population by stage for each day of summer 
 V=zeros(1,summerdays); % # vacant cells for each day of summer 
 P=zeros(1,summerdays); % # pollen cells for each day of summer
 H=zeros(1,summerdays); % # honey cells for each day of summer
@@ -72,16 +72,16 @@ for T = 0:(numyears-1) %T tells us what year we are in 0,1, 2...
 
 	disp('    Summer Season Dynamics');
 
-	[summres, summV,summP, summH, summR] = \
-		hive_summer(T,agemax,summerdays,yeardays,res,V,P,H,R,X);
+	[summS, summV, summP, summH, summR] = \
+		hive_summer(T,agemax,summerdays,yeardays,S,V,P,H,R,STATE0);
 
-	res = summres;
+	S = summS;
 	V = summV;
 	P = summP;
 	H = summH;
 	R = summR;
 
-	Spop(:,(yeardays*T+1):(yeardays*T+summerdays)) = res;
+	Spop(:,(yeardays*T+1):(yeardays*T+summerdays)) = S;
 	Vpop(:,(yeardays*T+1):(yeardays*T+summerdays)) = V;
 	Ppop(:,(yeardays*T+1):(yeardays*T+summerdays)) = P;
 	Hpop(:,(yeardays*T+1):(yeardays*T+summerdays)) = H;
@@ -89,35 +89,35 @@ for T = 0:(numyears-1) %T tells us what year we are in 0,1, 2...
 
 	disp('    Winter Season Dynamics')
 
-	[wintres,wintV,wintP,wintH,wintR] = \
-		hive_winter(T,agemax,agemaxwinter,summerdays,yeardays,res,V,P,H,R);
+	[wintS,wintV,wintP,wintH,wintR] = \
+		hive_winter(T,agemax,agemaxwinter,summerdays,yeardays,S,V,P,H,R);
 
-	Spop(:, (yeardays*T+summerdays+1):(yeardays*(T+1))) = wintres;
+	Spop(:,(yeardays*T+summerdays+1):(yeardays*(T+1))) = wintS;
 	Vpop(1,(yeardays*T+summerdays+1):(yeardays*(T+1))) = wintV;
 	Ppop(1,(yeardays*T+summerdays+1):(yeardays*(T+1))) = wintP;
-	Hpop (1,(yeardays*T+summerdays+1):(yeardays*(T+1))) = wintH;
-	Rpop (1,(yeardays*T+summerdays+1):(yeardays*(T+1))) = wintR;
+	Hpop(1,(yeardays*T+summerdays+1):(yeardays*(T+1))) = wintH;
+	Rpop(1,(yeardays*T+summerdays+1):(yeardays*(T+1))) = wintR;
 
 	disp('    Setting up next Summer Season')
 
 	N = zeros(agemax,1);
-	N(1:3)=Spop(1,yeardays*(T+1))/3;
-	N(4:11)=Spop(2,yeardays*(T+1))/8;
-	N(12:26)=Spop(3,yeardays*(T+1))/15;
-	N(27:42)= Spop(5,yeardays*(T+1))/34;
-	N(43:48)= Spop(5,yeardays*(T+1))/34 ;
-	N(49:agemax)=Spop(5,yeardays*(T+1))/34;
+	N(1:3) = Spop(1,yeardays*(T+1))/3;
+	N(4:11) = Spop(2,yeardays*(T+1))/8;
+	N(12:26) = Spop(3,yeardays*(T+1))/15;
+	N(27:42) = Spop(5,yeardays*(T+1))/34;
+	N(43:48) = Spop(5,yeardays*(T+1))/34 ;
+	N(49:agemax) = Spop(5,yeardays*(T+1))/34;
 	P0 = Ppop(1,yeardays*(T+1));
 	V0 = Vpop(1,yeardays*(T+1));
 	R0= Rpop(1,yeardays*(T+1));
 	H0= Hpop(1,yeardays*(T+1)); 
 
-	X = [ V0; P0; H0; R0; N];
-	res=zeros(6,summerdays);
-	R=zeros(1,summerdays);
-	V=zeros(1,summerdays);
-	P=zeros(1,summerdays);
-	H= zeros(1,summerdays); 
+	STATE0 = [ V0; P0; H0; R0; N];
+	S = zeros(6,summerdays);
+	R = zeros(1,summerdays);
+	V = zeros(1,summerdays);
+	P = zeros(1,summerdays);
+	H = zeros(1,summerdays); 
 
 end %END OF LOOP THROUGH MULTIPLE YEARS
 
@@ -151,6 +151,7 @@ timplot(YMatrix1, YMatrix2, Y3);
 % ylabel('Colony Weight')
 % 
 % BNy=(BARatio+FARatio)';
+
 format long;
 disp(sum(sum(Spop)));
 format short;
