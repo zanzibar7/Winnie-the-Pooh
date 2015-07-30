@@ -128,7 +128,7 @@ B=Hpop;  %honey storage throught all seasons
 YMatrix2= [A;B]';
 Y3=Rpop;
 %Y3=Spop(3)*0.1552/1000+Spop(4)*0.2189/1000+Spop(5)*0.2189/1000+A+B;
-timplot(YMatrix1, YMatrix2, Y3); 
+createfigs(YMatrix1, YMatrix2, Y3); 
 % figure;
 
 % plot(Y3);

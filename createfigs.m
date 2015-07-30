@@ -1,4 +1,4 @@
-function timplot(YMatrix1, YMatrix2,Y1)
+function createfigs(YMatrix1, YMatrix2,Y1)
 
 %CREATEFIGURE1(YMATRIX1,YMATRIX2,Y1)
 %  YMATRIX1:  matrix of y data
