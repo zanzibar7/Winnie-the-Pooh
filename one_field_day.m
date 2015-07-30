@@ -20,24 +20,15 @@ qh = 1; %probability of ..? downregulation of queen egg laying of some sort, use
 % h5: Rotais says .038-.14 cells/day doing various tasks
 % h6: Rotais says .08-.32 cells/day for nectar forager, and .026 - .039
 % cells/day for pollen forager
-h1 = 0;
-h2 = 0.0297; 
-h3 = 0;
-h4 = 0; 
-h5 =  0.05 ; 
-h6 = 0.05; 
+
+honeyconsumption = [ 0, 0.0297, 0, 0, 0.05 , 0.05 ];
 
 %Pollen consumption rates
 %a cellful of pollen weighs~~0.23g
 %These are from Rotais entirely.  HoPoMo has higher consumption of pollen
 %by brood, so this is an option with some flexibility.  Remember that
 %higher consumption means higher need, and thus more brought in.
-a1 = 0; 
-a2 = 0.0047;
-a3 = 0; 
-a4 = 0.028;
-a5 = 0; 
-a6 = 0; 
+pollenconsumption = [0, 0.0047, 0, 0.028, 0, 0 ];
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% SURVIVORSHIP PARAMETERS
@@ -48,32 +39,6 @@ a6 = 0;
 % st5 = 0.913;%0.88; % 0.96-88.6%--survivorship for house bee stage 
 % st6 = 0.78; % 78.5%--survivorship for forager bee stage %0.653;%
 
-%day of the year on which pesticide treatment was applied : 
-% August 1st 2012 = day 150
-% June 25th 2013 = day 115
-startdate = 241; 
-%enddate = 240; %day of the year on which pesticide treatment was no longer
-%in effect - probably end of field season
-
-if  date > startdate %&& date < enddate
-    %Parameters for fungicide treatment effects
-    st1 = 0.50;
-    st2 = 0.85;
-    st3 = 0.86;
-    st4 = 0.85;
-    st5 = 0.85;
-    st6 = 0.78;
-    qh = 0.5; %0.06;
-else
-    st1 = 0.85; % 0.86--survivorship for egg stage
-    st2 = 0.85; %---survivorship for larval stage
-    st3 = 0.86;
-    st4 = 0.85; % 0.99-85%--survivorship for nurse bee stage
-    st5 = 0.85; % 0.96-88.6%--survivorship for house bee stage
-    st6 = 0.78; % 78.5%--survivorship for forager bee stage
-    qh = 1;
-end
-
 %%% Following variables are not used below, just for reference currently
 % tel = 1; %0.98; %through-stage survival for egg maturing to 1st instar larva
 % tlp = 1; %0.85; %through-stage survival for larva maturaing to pupa
@@ -81,6 +46,30 @@ end
 % tnh = 1; %0.98; %through stage survival for nurse bee maturing to house bee
 % thf = 1; %0.98; %through-stage survival for house been maturing to forager
  
+%day of the year on which pesticide treatment was applied : 
+% August 1st 2012 = day 150
+% June 25th 2013 = day 115
+startdate = 241; 
+%enddate = 240; %day of the year on which pesticide treatment was no longer
+%in effect - probably end of field season
+
+% BUG!!!! current date calculation does not allow for multiple years
+if  date > startdate %&& date < enddate
+    %Parameters for fungicide treatment effects
+	stageship = [0.50, 0.85, 0.86, 0.85, 0.85, 0.78];
+    qh = 0.5; %0.06;
+else
+    % st1 = 0.85; % 0.86--survivorship for egg stage
+    % st2 = 0.85; %---survivorship for larval stage
+    % st3 = 0.86;
+    % st4 = 0.85; % 0.99-85%--survivorship for nurse bee stage
+    % st5 = 0.85; % 0.96-88.6%--survivorship for house bee stage
+    % st6 = 0.78; % 78.5%--survivorship for forager bee stage
+	stageship = [0.85, 0.85, 0.86, 0.85, 0.85, 0.78];
+    qh = 1;
+end
+
+
  
 % %% Current conditions in bee hive %%%%%%%%
 Vt = state(1); % vacant cells 
@@ -92,7 +81,7 @@ Nt = state(5:end);% bee number at time t
 stage = STAGEMATRIX*Nt;
 
 %% Queen reproduction potential (McLellan et al., 1978)
-relativedate = mod(date,360);
+relativedate = mod(date,360);  %% BUG!!! hard-coded dependence on year length
 maxProduction = (0.0000434)*(relativedate)^4.98293*exp(-0.05287*relativedate);
 
 %% Index for the quality of pollen status and nursing quality in the colony
@@ -106,8 +95,8 @@ Factorstore=6;
 
 % The colony pollen demand includes the need of egg, larval, nurse and house bee stage. 
 % We assume the daily demand of pollen of bees is constant stage-specific parameters.
-PollenDemand = a1*stage(1)+a2*stage(2)+a4*stage(4)+a5*stage(5); 
-HoneyDemand = h1*stage(1)+h2*stage(2)+h4*stage(4)+h5*stage(5)+h6*stage(6);
+PollenDemand = pollenconsumption*stage;
+HoneyDemand = honeyconsumption*stage;
 
 if ( (PollenDemand <= 0) || (HoneyDemand <= 0) )
     disp('PollenDemand or HoneyDemand leq zero, dead hive')
@@ -123,7 +112,8 @@ IndexNursing = max(0,min(1,stage(4)/((stage(2)+stage(1))*FactorBroodNurse+1)));
 
 %% Bee Dynamics : Everyone ages by one day
 
-stageship = [st1, st2*min(1,max(0,1-0.15*(1-Indexpollen*IndexNursing))), st3, st4*max(0,min(1,1-IndexNursing)), st5, st6];
+% determine nonlinear survivorships
+stageship = [1, min(1,max(0,1-0.15*(1-Indexpollen*IndexNursing))), 1, max(0,min(1,1-IndexNursing)), 1, 1].*stageship;
 survivorship = ([1,1,1,1-u,1,1-v].*(stageship.^(1./(STAGEMATRIX*ones(agemax,1)))'))*STAGEMATRIX;
 
 % survivorship(1:3) = st1^(1/3); % the daily survival rate of egg stage at age(i=1-3) 
