@@ -43,13 +43,17 @@ STAGEMATRIX(4,27:42)=1;
 STAGEMATRIX(5,43:48)=1;
 STAGEMATRIX(6,49:agemax)=1;
 
+% initial number of eggs/3 days   
+% initial number of larva = 1600/8 days
+% initial number of pupa = 2400/15 days
+% initial number of nurse bees = 3000/16 days
+% initial number of house bees= 3000/ 6 days
+% initial number of forager bees = 3000 / 12 days
+STAGES0 = [0, 200, 160, 187, 500, 250];
 N = zeros(agemax,1);
-N(1:3)=0;     % initial number of eggs/3 days   
-N(4:11)=200;  % initial number of larva = 1600/8 days
-N(12:26)=160; % initial number of pupa = 2400/15 days
-N(27:42)=187; % initial number of nurse bees = 3000/16 days
-N(43:48)=500; % initial number of house bees= 3000/ 6 days
-N(49:agemax)=250; % initial number of forager bees = 3000 / 12 days
+for i=1:6
+	N = N + G(i,:)'*STAGES0(1,i);
+end
 
 STATE0 = [V0; P0; H0; R0; N]; % This hold the initial state
 
