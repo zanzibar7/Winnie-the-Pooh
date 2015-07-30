@@ -73,8 +73,8 @@ end
  
 % %% Current conditions in bee hive %%%%%%%%
 Vt = state(1); % vacant cells 
-Pt = state(2); %  pollen stores at time t. 
-Ht = state(3);%  honey stores at time t. 
+Pt = state(2); % pollen stores
+Ht = state(3); % honey stores
 % We don't care about state(4), because those are now the 1-day old eggs,
 % and the new state(4) will only depend on how many eggs are layed now.
 Nt = state(5:end);% bee number at time t 
