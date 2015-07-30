@@ -65,27 +65,21 @@ Rpop=zeros(1,yeardays*numyears);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%% Simulation algorithm
+%
+% Simulation algorithm
+%
+% Each year starts with a field season, goes through one winter,
+% and then sets up the next field season
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-%each year starts with a field season, goes through one winter, and then
-%one more field season
 for year = 0:(numyears-1) 
 	disp(['Year ',num2str(year)]);
-
-	% precalculate indexes
-	i = yeardays*year+1;
-	j = yeardays*year+summerdays;
-	k = j+1;
-	l = yeardays*(year+1);
-
-
+	
 	disp('    Summer Season Dynamics'); %%%%%%%%%%%%%%%%%%%%
-
 	[S, V, P, H, R] = \
 		hive_summer(year, agemax, summerdays, yeardays, STATE0, STAGEMATRIX);
-
+	i = yeardays*year+1;
+	j = yeardays*year+summerdays;
 	Spop(:,i:j) = S;
 	Vpop(:,i:j) = V;
 	Ppop(:,i:j) = P;
@@ -93,30 +87,28 @@ for year = 0:(numyears-1)
 	Rpop(:,i:j) = R;
 
 	disp('    Winter Season Dynamics'); %%%%%%%%%%%%%%%%%%%%
-
 	[wintS,wintV,wintP,wintH,wintR] = \
 		hive_winter(year,agemax,agemaxwinter,summerdays,yeardays,S,V,P,H,R);
-
-	Spop(:,k:l) = wintS;
-	Vpop(1,k:l) = wintV;
-	Ppop(1,k:l) = wintP;
-	Hpop(1,k:l) = wintH;
-	Rpop(1,k:l) = wintR;
+	i = yeardays*year+summerdays+1;
+	j = yeardays*(year+1);
+	Spop(:,i:j) = wintS;
+	Vpop(1,i:j) = wintV;
+	Ppop(1,i:j) = wintP;
+	Hpop(1,i:j) = wintH;
+	Rpop(1,i:j) = wintR;
 
 	disp('    Setting up next Summer Season'); %%%%%%%%%%%%%%%%%%%
-
 	N = zeros(agemax,1);
-	N(1:3) = Spop(1,l)/3;
-	N(4:11) = Spop(2,l)/8;
-	N(12:26) = Spop(3,l)/15;
-	N(27:42) = Spop(5,l)/34;
-	N(43:48) = Spop(5,l)/34 ;
-	N(49:agemax) = Spop(5,l)/34;
-	P0 = Ppop(1,l);
-	V0 = Vpop(1,l);
-	R0= Rpop(1,l);
-	H0= Hpop(1,l); 
-
+	N(1:3) = Spop(1,j)/3;
+	N(4:11) = Spop(2,j)/8;
+	N(12:26) = Spop(3,j)/15;
+	N(27:42) = Spop(5,j)/34;
+	N(43:48) = Spop(5,j)/34 ;
+	N(49:agemax) = Spop(5,j)/34;
+	P0 = Ppop(1,j);
+	V0 = Vpop(1,j);
+	R0= Rpop(1,j);
+	H0= Hpop(1,j); 
 	STATE0 = [ V0; P0; H0; R0; N];
 end %END OF LOOP THROUGH MULTIPLE YEARS
 
