@@ -15,8 +15,8 @@ function timfigs(YMatrix1, YMatrix2,Y1)
 	legend('Pollen','Honey');
 
 	subplot(3,1,3)
-	W = (.047*YMatrix1(:, 2)+.158*YMatrix1(:, 3) + .133*(YMatrix1(:, 4)+YMatrix1(:, 5)+YMatrix1(:, 6)) + .23*YMatrix2(:, 1)+ .5*YMatrix2(:, 2))/1000;
-	plot(W,'ko-');
+	weight = (.047*YMatrix1(:, 2)+.158*YMatrix1(:, 3) + .133*(YMatrix1(:, 4)+YMatrix1(:, 5)+YMatrix1(:, 6)) + .23*YMatrix2(:, 1)+ .5*YMatrix2(:, 2))/1000;
+	plot(weight,'ko-');
 	% Create ylabel
 	ylabel('Weight (kg) - no equip');
 	xlabel('Day');
