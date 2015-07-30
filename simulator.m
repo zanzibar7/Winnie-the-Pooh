@@ -35,6 +35,14 @@ V0 = 500000 - P0; % intial vacant cells, total number cells is 140000
 H0=0; %initial honey
 R0=0; %initial eggs
 
+STAGEMATRIX = zeros(6,agemax);
+STAGEMATRIX(1,1:3)=1;
+STAGEMATRIX(2,4:11)=1;
+STAGEMATRIX(3,12:26)=1;
+STAGEMATRIX(4,27:42)=1;
+STAGEMATRIX(5,43:48)=1;
+STAGEMATRIX(6,49:agemax)=1;
+
 N = zeros(agemax,1);
 N(1:3)=0;     % initial number of eggs/3 days   
 N(4:11)=200;  % initial number of larva = 1600/8 days
@@ -72,14 +80,9 @@ for T = 0:(numyears-1) %T tells us what year we are in 0,1, 2...
 
 	disp('    Summer Season Dynamics');
 
-	[summS, summV, summP, summH, summR] = \
-		hive_summer(T,agemax,summerdays,yeardays,S,V,P,H,R,STATE0);
-
-	S = summS;
-	V = summV;
-	P = summP;
-	H = summH;
-	R = summR;
+	[S, V, P, H, R] = \
+		hive_summer(T, agemax, summerdays, yeardays, S, V, P, H, R, \
+			STATE0, STAGEMATRIX);
 
 	Spop(:,(yeardays*T+1):(yeardays*T+summerdays)) = S;
 	Vpop(:,(yeardays*T+1):(yeardays*T+summerdays)) = V;
@@ -113,12 +116,6 @@ for T = 0:(numyears-1) %T tells us what year we are in 0,1, 2...
 	H0= Hpop(1,yeardays*(T+1)); 
 
 	STATE0 = [ V0; P0; H0; R0; N];
-	S = zeros(6,summerdays);
-	R = zeros(1,summerdays);
-	V = zeros(1,summerdays);
-	P = zeros(1,summerdays);
-	H = zeros(1,summerdays); 
-
 end %END OF LOOP THROUGH MULTIPLE YEARS
 
 %for each day, this gives the ratio of eggs+larvae/nurse+house bees
