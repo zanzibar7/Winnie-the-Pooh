@@ -3,13 +3,14 @@ function nextstate = one_field_day(state,date,STAGEMATRIX)% bee model in the fie
 global hsurfX hsurfY hsurf; % the interpolated surface of NectarODE and honeycollection 
 
 agemax = max(size(STAGEMATRIX)); % indexing in matlab starts at 1, so add an extra day
+n_brood = sum(sum(STAGEMATRIX')(1:3));
 
-u = 0; % probability of individual nurse bee precociously developing to forager
-v = 0; % reversed prob. between foragers and house bees;
+p_precocious = 0; % probability of individual nurse bee precociously developing to forager
+p_reversion = 0; % reversed prob. between foragers and house bees;
 FactorBroodNurse = 2.65 ; % One nurse bee can heat 2.65 brood cells - NOT CRUCIAL.. but probably closer to 5
 rt = 0; %probability of individual bee retardant developing to next age class
 
-qh = 1; %probability of ..? downregulation of queen egg laying of some sort, used in perturbed hive scenarios
+queen_efficiency = 1; % downregulation of queen egg laying, used in perturbed hive scenarios
 
 %Honey consumption rates
 % fraction of a cell's honey consumed by a bee in one day, a cellful of honey weighs~~0.5g
@@ -67,8 +68,6 @@ maxProduction = (0.0000434)*(relativedate)^4.98293*exp(-0.05287*relativedate);
 % st6 = 0.78; % 78.5%--survivorship for forager bee stage
 
 stageship = [0.85, 0.85, 0.86, 0.85, 0.85, 0.78];
-qh = 1;
-
 
 %  %%%%%%%%%%% Fungicide treatments
 %  %day of the year on which pesticide treatment was applied : 
@@ -81,7 +80,7 @@ qh = 1;
 %  if  date == startdate %  && date < enddate
 %      %Parameters for fungicide treatment effects
 %  	stageship = [0.50, 0.85, 0.86, 0.85, 0.85, 0.78];
-%      qh = 0.5; %0.06;
+%      queen_efficiency = 0.5; %0.06;
 %  end
 
 
@@ -116,8 +115,8 @@ IndexNursing = max(0,min(1,stage(4)/((stage(2)+stage(1))*FactorBroodNurse+1)));
 %% Bee Dynamics : Everyone ages by one day
 
 % determine nonlinear survivorships
-stageship = [1, min(1,max(0,1-0.15*(1-Indexpollen*IndexNursing))), 1, max(0,min(1,1-IndexNursing)), 1, 1].*stageship;
-survivorship = ([1,1,1,1-u,1,1-v].*(stageship.^(1./(STAGEMATRIX*ones(agemax,1)))'))*STAGEMATRIX;
+stageship = stageship.*[1, min(1,max(0,1-0.15*(1-Indexpollen*IndexNursing))), 1, max(0,min(1,1-IndexNursing)), 1, 1];
+survivorship = ([1, 1, 1, 1-p_precocious, 1, 1-p_reversion].*(stageship.^(1./sum(STAGEMATRIX'))))*STAGEMATRIX;
 
 % survivorship(1:3) = st1^(1/3); % the daily survival rate of egg stage at age(i=1-3) 
 % survivorship(4:11) = (st2*min(1,max(0,1-0.15*(1-Indexpollen*IndexNursing))))^(1/8); %  LARVA 
@@ -155,10 +154,10 @@ A = (diag(1-theta,-1)+diag([0;theta]))*diag(survivorship);
 %% WARNING: explicit stage-structure dependence in code!!!!!!!!!!!!!!!!!!!!!
 
 B=zeros(agemax);% the precocious development of nurse bees 
-B(49,27:42)=u*ones(1,16);
+B(49,27:42)=p_precocious*ones(1,16);
 
 C=zeros(agemax);
-C(27,49:agemax)= v*ones(1,12); % the retarded development of forager bees 
+C(27,49:agemax)= p_reversion*ones(1,12); % the retarded development of forager bees 
 
 Nt1 = (A+B+C)*Nt; % structured dynamics for bees - output is a vector
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -168,21 +167,17 @@ Nt1 = (A+B+C)*Nt; % structured dynamics for bees - output is a vector
 %% Food is consumed, new eggs are layed
 
 % pollen consumption of egg, larval, nurse and house bee stage
-foodeaten =  min([Pt PollenDemand]); 
+foodeaten =  min([Pt, PollenDemand]); 
 
 % The removal of dead brood, hygenic behavior gives total number of scavanged cells
-notsurvive = ones(1,26);
-for k = 1:26
-    notsurvive(k) = 1-survivorship(k);
-end
-
-scavanged = notsurvive*Nt(1:26); %this was the line that was generating an error before- causing Vt to be a matrix
+% -- this was the line that was generating an error before- causing Vt to be a matrix
+scavanged = (1-survivorship(1:n_brood))*Nt(1:n_brood);
 
 % honey consumption of larval, nurse, house and forager bee stage
-honeyeaten= min([Ht HoneyDemand]); 
+honeyeaten= min([Ht, HoneyDemand]); 
 
 % Empty Cells due to the cleaned food cells and adult emergence
-vacated = Nt(26) + foodeaten + honeyeaten; %check this, maybe not Nt(26)- maybe Nt1(26)?
+vacated = Nt(n_brood) + foodeaten + honeyeaten; %check this, maybe not Nt(26)- maybe Nt1(26)?
 Vt = Vt + vacated + scavanged ;
 %Actual eggs layed by queen this day determined here
 if (stage(4)+stage(5)+stage(6))<= 10 % the minimum requirement of number of bees needed to be around a queen bee
@@ -195,10 +190,10 @@ else
     % the one in the documentation, but this layer of complexsity can be
     % added later!
     %Vt+vacated+scavanged cells gives how many cells are allocated to 
-    %R = min([qh*maxProduction,stage(4)*FactorBroodNurse,Vt+vacated+scavangedcells]);
-    %qh is set to 1 currently- simplified, always max production
+    %R = min([queen_efficiency*maxProduction,stage(4)*FactorBroodNurse,Vt+vacated+scavangedcells]);
+    %queen_efficiency is set to 1 currently- simplified, always max production
 
-    R = min([Vt, qh*maxProduction]); 
+    R = min([Vt, queen_efficiency*maxProduction]); 
     %the only cap on the egg laying right now is the 
 end 
 %UPDATE VACANT CELL COUNT
@@ -235,9 +230,8 @@ PollenForager=max(stage(6)*0.01, min(NeedPollenForager,stage(6)*.33)); %%THIS on
 
 % pollen storage depends on the available cells in the hive
 % and the foraging collection efficiency of the pollen forager---assumption for pollen foraging behavior
-storedfood = max([0 min([PollenForager*0.48 Vt])]);
+storedfood = max([0, min([PollenForager*0.48, Vt])]);
 
-%UPDATE VACANT CELL COUNT
 Vt = Vt - storedfood ;
 if Vt == 0
 	disp('ran out of space after food stored')
@@ -250,29 +244,18 @@ end
 % Nectar being processed into honey is reduced in volume by a factor .4
  
 predictedhoney=interp2(hsurfX,hsurfY,hsurf,stage(5),(stage(6)-PollenForager));
-
 if ( 0==exist('predictedhoney','var') || isnan(predictedhoney) || predictedhoney<0 )
 	predictedhoney=1.e-3;
 end
-storedhoney = min([predictedhoney Vt]);
+storedhoney = min([predictedhoney, Vt]);
     
-%UPDATE VACANT CELL COUNT
 Vt = Vt - storedhoney ;
-%     if Vt == 0
-%             disp('ran out of space after honey stored')
-%             disp(date)
-               %This isn't tecnically an issue, since the eggs emerging in
-               %the next stage should make more room... but it shouldn't
-               %really  happen
-%     end
-   
+ 
 %% Pollen, Honey, Cells net input 
-Pt = Pt - foodeaten + storedfood;
-Pt1 = max(0,Pt); % Updated pollen stores at end of day
-Ht1 = Ht + storedhoney - honeyeaten; % Updated honey stores at end of day, capped by total size of hive
-Vt1 = Vt; % Vacant cells at end of the day - gets updated throughout file  
+Pt = max(0, Pt - foodeaten + storedfood); % Updated pollen stores at end of day
+Ht = Ht + storedhoney - honeyeaten; % Updated honey stores at end of day, capped by total size of hive
 Nt1(1) = R; %R; %number of eggs laid today, these are now the age zero eggs
 
-nextstate = [Vt1; Pt1; Ht1; R; Nt1];
+nextstate = [Vt; Pt; Ht; R; Nt1];
 
 return
