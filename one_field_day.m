@@ -74,14 +74,15 @@ else
     qh = 1;
 end
 
-tel = 1; %0.98; %through-stage survival for egg maturing to 1st instar larva
-tlp = 1; %0.85; %through-stage survival for larva maturaing to pupa
-tpn = 1; %0.98; %through-stage survival for pupa maturing to nurse bee
-tnh = 1; %0.98; %through stage survival for nurse bee maturing to house bee
-thf = 1; %0.98; %through-stage survival for house been maturing to forager
-
-
-%% Current conditions in bee hive %%%%%%%%
+%%% Following variables are not used below, just for reference currently
+% tel = 1; %0.98; %through-stage survival for egg maturing to 1st instar larva
+% tlp = 1; %0.85; %through-stage survival for larva maturaing to pupa
+% tpn = 1; %0.98; %through-stage survival for pupa maturing to nurse bee
+% tnh = 1; %0.98; %through stage survival for nurse bee maturing to house bee
+% thf = 1; %0.98; %through-stage survival for house been maturing to forager
+ 
+ 
+% %% Current conditions in bee hive %%%%%%%%
 Vt = state(1); % vacant cells 
 Pt = state(2); %  pollen stores at time t. 
 Ht = state(3);%  honey stores at time t. 
