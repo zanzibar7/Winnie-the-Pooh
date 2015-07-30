@@ -32,7 +32,7 @@ function [S, V, P, H, R] = hive_winter(year, agemax, agemaxwinter, summerdays, \
     Y = [ V0; P0; H0; R0; S0];
 
     for t = (yeardays*year+summerdays+1):(yeardays*(year+1))
-        Y = one_winter_day(Y,t);
+        Y = one_winter_day(Y, t, WINTERSTAGEMATRIX);
 
         i = t - (yeardays*year+summerdays);
         V(1,i) = Y(1);
