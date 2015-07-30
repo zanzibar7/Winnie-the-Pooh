@@ -51,7 +51,7 @@ STAGEMATRIX(6,49:agemax)=1;
 % initial number of nurse bees = 3000/16 days
 % initial number of house bees= 3000/ 6 days
 % initial number of forager bees = 3000 / 12 days
-N = ([0, 200, 160, 187, 500, 250]*STAGEMATRIX)';
+N = (([0, 1600, 2400, 3000, 3000, 3000]./sum(STAGEMATRIX'))*STAGEMATRIX)';
 
 STATE0 = [V0; P0; H0; R0; N]; % This hold the initial state
 
@@ -143,7 +143,9 @@ timplot(YMatrix1, YMatrix2, Y3);
 % 
 % BNy=(BARatio+FARatio)';
 
+% TESTING
 format long;
 disp(sum(sum(Spop)));
-assert( abs(11058651.5313465 - sum(sum(Spop))) < 5e-8 );
+testval = 11058681.1110574;
+assert( abs( testval - sum(sum(Spop))) < 5e-8 );
 format short;
