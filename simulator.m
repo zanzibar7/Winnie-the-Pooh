@@ -89,7 +89,8 @@ for year = 0:(numyears-1)
 
 	disp('    Winter Season Dynamics'); %%%%%%%%%%%%%%%%%%%%
 	[wintS,wintV,wintP,wintH,wintR] = \
-		hive_winter(year,agemax,agemaxwinter,summerdays,yeardays,S,V,P,H,R);
+		hive_winter(year,agemax,agemaxwinter,summerdays,yeardays, \
+			S(:,end),V(:,end),P(:,end),H(:,end),R(:,end));
 	i = yeardays*year+summerdays+1;
 	j = yeardays*(year+1);
 	Spop(:,i:j) = wintS;
