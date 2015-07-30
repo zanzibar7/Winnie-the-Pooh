@@ -118,33 +118,8 @@ end %END OF LOOP THROUGH MULTIPLE YEARS
 %for each day, this gives the ratio of foragers/nurse+house bees
 % FARatio=Spop(6,1:360*numyears)./(Spop(4,1:360*numyears)+Spop(5,1:360*numyears));
 
-YMatrix1=Spop';
-A=Ppop; %pollen storage throughout all seaseons
-% disp('pollen in kg, no equip')
-% disp(A'*.00023)
-B=Hpop;  %honey storage throught all seasons
-% A=Ppop.*0.23/1000;
-% B=Hpop*0.5/1000;
-YMatrix2= [A;B]';
-Y3=Rpop;
-%Y3=Spop(3)*0.1552/1000+Spop(4)*0.2189/1000+Spop(5)*0.2189/1000+A+B;
-createfigs(YMatrix1, YMatrix2, Y3); 
-% figure;
+timfigs(Spop', [Ppop;Hpop]', Rpop); 
 
-% plot(Y3);
-% foundationweight = 50.2 * 453.6 /1000;
-% 
-% Y1=(Spop(2)+Spop(3))*0.1552/1000+Spop(4)*0.2189/1000+Spop(5)*0.2189/1000+Ppop.*0.23/1000+Hpop*0.5/1000;
-% plot(Y1(1:360));
-% t=[0:30:360];months=['Jan';'Feb';'Mar';'Apr';'May';'Jun';'Jul';'Aug';'Sep';'Oct';'Nov';'Dec';];
-% set(gca,'xtick',t)
-% set(gca,'xticklabel',months)wint
-% xlabel('Date')
-% ylabel('Colony Weight')
-% 
-% BNy=(BARatio+FARatio)';
-
-% TESTING
 format long;
 disp(sum(sum(Spop)));
 testval = 20329600.2833733;

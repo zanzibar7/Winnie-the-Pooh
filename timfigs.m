@@ -1,4 +1,4 @@
-function timplot(YMatrix1, YMatrix2,Y1)
+function timfigs(YMatrix1, YMatrix2,Y1)
 
 	% Create figure
 	figure(1);
@@ -21,8 +21,7 @@ function timplot(YMatrix1, YMatrix2,Y1)
 	ylabel('Weight (kg) - no equip');
 	xlabel('Day');
 
-	print -depsc output.eps
-	print -dpdf output.pdf
+	print -depsc timoutput.eps
 
 	close()
 
