@@ -4,17 +4,16 @@
 
 global hsurfX hsurfY hsurf;
 
-A = exist('hsurfX.data','file');
-if ( 0 ~= A )
+if ( 0 ~= exist('hsurf.data','file') )
 	disp('Loading nector surface');
 	load('hsurfX.data');
 	load('hsurfY.data');
 	load('hsurf.data');
-else disp('no hsurf file')
+else
+	disp('no hsurf files')
 end
 
-E = exist('hsurfX','var');
-if ( 0 == E || isempty(hsurf) ) 
+if ( 0 == exist('hsurf','var') || isempty(hsurf) )
 	disp('Precomputing nector surface');
     trialsurf;
 end
