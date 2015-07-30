@@ -70,44 +70,44 @@ Rpop=zeros(1,yeardays*numyears);
 
 %each year starts with a field season, goes through one winter, and then
 %one more field season
-for T = 0:(numyears-1) %T tells us what year we are in 0,1, 2...
-	disp(['Year ',num2str(T)]);
+for year = 0:(numyears-1) 
+	disp(['Year ',num2str(year)]);
 
-	disp('    Summer Season Dynamics');
+	disp('    Summer Season Dynamics'); %%%%%%%%%%%%%%%%%%%%
 
 	[S, V, P, H, R] = \
-		hive_summer(T, agemax, summerdays, yeardays, STATE0, STAGEMATRIX);
+		hive_summer(year, agemax, summerdays, yeardays, STATE0, STAGEMATRIX);
 
-	Spop(:,(yeardays*T+1):(yeardays*T+summerdays)) = S;
-	Vpop(:,(yeardays*T+1):(yeardays*T+summerdays)) = V;
-	Ppop(:,(yeardays*T+1):(yeardays*T+summerdays)) = P;
-	Hpop(:,(yeardays*T+1):(yeardays*T+summerdays)) = H;
-	Rpop(:,(yeardays*T+1):(yeardays*T+summerdays)) = R;
+	Spop(:,(yeardays*year+1):(yeardays*year+summerdays)) = S;
+	Vpop(:,(yeardays*year+1):(yeardays*year+summerdays)) = V;
+	Ppop(:,(yeardays*year+1):(yeardays*year+summerdays)) = P;
+	Hpop(:,(yeardays*year+1):(yeardays*year+summerdays)) = H;
+	Rpop(:,(yeardays*year+1):(yeardays*year+summerdays)) = R;
 
-	disp('    Winter Season Dynamics')
+	disp('    Winter Season Dynamics'); %%%%%%%%%%%%%%%%%%%%
 
 	[wintS,wintV,wintP,wintH,wintR] = \
-		hive_winter(T,agemax,agemaxwinter,summerdays,yeardays,S,V,P,H,R);
+		hive_winter(year,agemax,agemaxwinter,summerdays,yeardays,S,V,P,H,R);
 
-	Spop(:,(yeardays*T+summerdays+1):(yeardays*(T+1))) = wintS;
-	Vpop(1,(yeardays*T+summerdays+1):(yeardays*(T+1))) = wintV;
-	Ppop(1,(yeardays*T+summerdays+1):(yeardays*(T+1))) = wintP;
-	Hpop(1,(yeardays*T+summerdays+1):(yeardays*(T+1))) = wintH;
-	Rpop(1,(yeardays*T+summerdays+1):(yeardays*(T+1))) = wintR;
+	Spop(:,(yeardays*year+summerdays+1):(yeardays*(year+1))) = wintS;
+	Vpop(1,(yeardays*year+summerdays+1):(yeardays*(year+1))) = wintV;
+	Ppop(1,(yeardays*year+summerdays+1):(yeardays*(year+1))) = wintP;
+	Hpop(1,(yeardays*year+summerdays+1):(yeardays*(year+1))) = wintH;
+	Rpop(1,(yeardays*year+summerdays+1):(yeardays*(year+1))) = wintR;
 
-	disp('    Setting up next Summer Season')
+	disp('    Setting up next Summer Season'); %%%%%%%%%%%%%%%%%%%
 
 	N = zeros(agemax,1);
-	N(1:3) = Spop(1,yeardays*(T+1))/3;
-	N(4:11) = Spop(2,yeardays*(T+1))/8;
-	N(12:26) = Spop(3,yeardays*(T+1))/15;
-	N(27:42) = Spop(5,yeardays*(T+1))/34;
-	N(43:48) = Spop(5,yeardays*(T+1))/34 ;
-	N(49:agemax) = Spop(5,yeardays*(T+1))/34;
-	P0 = Ppop(1,yeardays*(T+1));
-	V0 = Vpop(1,yeardays*(T+1));
-	R0= Rpop(1,yeardays*(T+1));
-	H0= Hpop(1,yeardays*(T+1)); 
+	N(1:3) = Spop(1,yeardays*(year+1))/3;
+	N(4:11) = Spop(2,yeardays*(year+1))/8;
+	N(12:26) = Spop(3,yeardays*(year+1))/15;
+	N(27:42) = Spop(5,yeardays*(year+1))/34;
+	N(43:48) = Spop(5,yeardays*(year+1))/34 ;
+	N(49:agemax) = Spop(5,yeardays*(year+1))/34;
+	P0 = Ppop(1,yeardays*(year+1));
+	V0 = Vpop(1,yeardays*(year+1));
+	R0= Rpop(1,yeardays*(year+1));
+	H0= Hpop(1,yeardays*(year+1)); 
 
 	STATE0 = [ V0; P0; H0; R0; N];
 end %END OF LOOP THROUGH MULTIPLE YEARS
