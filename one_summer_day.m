@@ -8,7 +8,7 @@ n_brood = sum(sum(STAGEMATRIX')(1:3));
 p_precocious = 0; % probability of individual nurse bee precociously developing to forager
 p_reversion = 0; % reversed prob. between foragers and house bees;
 FactorBroodNurse = 2.65 ; % One nurse bee can heat 2.65 brood cells - NOT CRUCIAL.. but probably closer to 5
-rt = 0; %probability of individual bee retardant developing to next age class
+p_slow = 0*1e-10; %probability of individual bee retardant developing to next age class
 
 queen_efficiency = 1; % downregulation of queen egg laying, used in perturbed hive scenarios
 
@@ -143,25 +143,29 @@ survivorship = ([1, 1, 1, 1-p_precocious, 1, 1-p_reversion].*(stageship.^(1./sum
 % survivorship(49:agemax)= (1-v)*st6^(1/12); % v is reversed probability of the forager bee stage to revert back to in-hive nurse bees. 
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Everything here just relates to storage and matrix multiplication.
-theta = rt*ones(agemax,1); % theta = probabilities of retarded development at each stage
+A = diag(survivorship);
+theta = p_slow*ones(agemax,1); % probabilities of retarded development
 theta(1) = 0.; % can not have retardation of first stage
-	%all zeros right now
-% A is a matrix that stores the survival rate for each stage
-
 A = (diag(theta)+diag(1-theta(1:end-1),-1))*diag(survivorship);
 
-%% WARNING: explicit stage-structure dependence in code!!!!!!!!!!!!!!!!!!!!!
-
-B=zeros(agemax);% the precocious development of nurse bees 
-B(find(STAGEMATRIX(6,:))(1),:) = p_precocious*STAGEMATRIX(4,:);
-
-C=zeros(agemax);
-C(find(STAGEMATRIX(4,:))(1),:) = p_reversion*STAGEMATRIX(6,:); % the retarded development of forager bees 
-
-Nt1 = (A+B+C)*Nt; % structured dynamics for bees - output is a vector
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Extra transitions
+ii = find(STAGEMATRIX(4,:));
+jj = find(STAGEMATRIX(6,:));
+% the precocious development of nurse bees 
+j = jj(1);
+for i = ii;
+	A(j,i) = A(j,i) + A(i,i)*p_precocious;
+	A(i,i) = A(i,i)*(1-p_precocious);
+end
+% the reversion of development of forager bees 
+j = ii(1);
+for i = jj;
+	A(j,i) = A(j,i) + A(i,i)*p_reversion;
+	A(i,i) = A(i,i)*(1-p_reversion);
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 
@@ -255,8 +259,9 @@ Vt = Vt - storedhoney ;
 %% Pollen, Honey, Cells net input 
 Pt = max(0, Pt - foodeaten + storedfood); % Updated pollen stores at end of day
 Ht = Ht + storedhoney - honeyeaten; % Updated honey stores at end of day, capped by total size of hive
-Nt1(1) = R; %R; %number of eggs laid today, these are now the age zero eggs
+Nt = A*Nt; % structured dynamics for bees - output is a vector
+Nt(1) = R; %R; %number of eggs laid today, these are now the age zero eggs
 
-nextstate = [Vt; Pt; Ht; R; Nt1];
+nextstate = [Vt; Pt; Ht; R; Nt];
 
 return
