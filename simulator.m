@@ -116,7 +116,7 @@ for year = 0:(numyears-1)
 	wn = (wintS([1,2,3,5],end)./sum(([eye(4),[0,0,0,1]'*[1,1]]*STAGEMATRIX)')')';
 	wn = wn*[eye(3,6); kron([0,1],[1,1,1])];
 	N0 = (wn*STAGEMATRIX)';
-	[ sum(N0), sum(wintS(:,end)) ]
+	assert( abs(sum(N0) - sum(wintS(:,end))) < 1e-1); % check for conversion bug
 
 	V0 = wintV(1,end);
 	P0 = wintP(1,end);
