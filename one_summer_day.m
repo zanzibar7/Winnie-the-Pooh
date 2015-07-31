@@ -115,8 +115,9 @@ IndexNursing = max(0,min(1,stage(4)/((stage(2)+stage(1))*FactorBroodNurse+1)));
 %% Bee Dynamics : Everyone ages by one day
 
 % determine nonlinear survivorships
-stageship = stageship.*[1, min(1,max(0,1-0.15*(1-Indexpollen*IndexNursing))), 1, max(0,min(1,1-IndexNursing)), 1, 1];
-survivorship = ([1, 1, 1, 1-p_precocious, 1, 1-p_reversion].*(stageship.^(1./sum(STAGEMATRIX'))))*STAGEMATRIX;
+stageship = stageship.*[1, min(1,max(0,1-0.15*(1-Indexpollen*IndexNursing))), \
+	1, max(0,min(1,1-IndexNursing)), 1, 1];
+survivorship = (stageship.^(1./sum(STAGEMATRIX')))*STAGEMATRIX;
 
 % survivorship(1:3) = st1^(1/3); % the daily survival rate of egg stage at age(i=1-3) 
 % survivorship(4:11) = (st2*min(1,max(0,1-0.15*(1-Indexpollen*IndexNursing))))^(1/8); %  LARVA 
