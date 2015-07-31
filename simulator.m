@@ -113,12 +113,11 @@ for year = 0:(numyears-1)
 	Rpop(1,i:j) = wintR;
 
 	disp('    Setting up next Summer Season'); %%%%%%%%%%%%%%%%%%%
-	N0(1:3)       = wintS(1,end)/3;
-	N0(4:11)      = wintS(2,end)/8;
-	N0(12:26)     = wintS(3,end)/15;
-	N0(27:42)     = wintS(5,end)/34;
-	N0(43:48)     = wintS(5,end)/34;
-	N0(49:agemax) = wintS(5,end)/34;
+	wn = (wintS([1,2,3,5],end)./sum(([eye(4),[0,0,0,1]'*[1,1]]*STAGEMATRIX)')')';
+	wn = wn*[eye(3,6); kron([0,1],[1,1,1])];
+	N0 = (wn*STAGEMATRIX)';
+	[ sum(N0), sum(wintS(:,end)) ]
+
 	V0 = wintV(1,end);
 	P0 = wintP(1,end);
 	R0 = wintR(1,end);
