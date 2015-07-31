@@ -4,7 +4,7 @@ global hsurfX hsurfY hsurf; % the interpolated surface of NectarODE and honeycol
 
 p_precocious = 0; % probability of nurse bee precociously developing to forager
 p_reversion = 0; % reversed probability between foragers and nurse bees;
-FactorBroodNurse = 2.65; % One nurse bee can heat 2.65 brood cells - NOT CRUCIAL.. but probably closer to 5
+broodnurseratio = 2.65; % One nurse bee can heat 2.65 brood cells - NOT CRUCIAL.. but probably closer to 5
 p_slow = 0*1e-10; %probability of individual bee retardant developing to next age class
 
 queen_efficiency = 1; % downregulation of queen egg laying, used in perturbed hive scenarios
@@ -31,7 +31,7 @@ pollenconsumption = [0, 0.0047, 0, 0.028, 0, 0 ];
 % (Blaschon et al.,1999) The modeled colony regulates the pollen stores around
 % a level that represents a reserve for approximately 6 days, based on the
 % current level of demand.
-Factorstore=6;
+storagelead=6;
 
 % 0.48 is the pollen collected each day each forager, based on the amount
 % of pollen collected per foraging trip(0.06 cellful pollen,Camazine et
@@ -120,9 +120,9 @@ end
 
 % the level of the pollen stores in relation to the demand situation of the colony.
 %got rid of +1s in the denominators
-IndexPollen = max([0  min([1 Pt/(PollenDemand*Factorstore + 1) ])] );%max(0,min(1,Pt/(PollenDemand*Factorstore)))
+IndexPollen = max([0  min([1 Pt/(PollenDemand*storagelead + 1) ])] );%max(0,min(1,Pt/(PollenDemand*storagelead)))
 % The level of the active nurse bees population in relation to the total nursing demand of all brood stages.
-IndexNursing = max(0,min(1,stage(4)/((stage(2)+stage(1))*FactorBroodNurse+1)));
+IndexNursing = max(0,min(1,stage(4)/((stage(2)+stage(1))*broodnurseratio+1)));
 % Indexhoney = max([0 min([1 Ht/HoneyDemand])]); %max(0,min(1,Ht/(HoneyDemand)))
 
 
@@ -205,7 +205,7 @@ else
     % the one in the documentation, but this layer of complexsity can be
     % added later!
     %Vt+vacated+scavanged cells gives how many cells are allocated to 
-    %R = min([queen_efficiency*maxProduction,stage(4)*FactorBroodNurse,Vt+vacated+scavangedcells]);
+    %R = min([queen_efficiency*maxProduction,stage(4)*broodnurseratio,Vt+vacated+scavangedcells]);
     %queen_efficiency is set to 1 currently- simplified, always max production
 
     R = min([Vt, queen_efficiency*maxProduction]); 
@@ -222,9 +222,9 @@ end
 
 % Pollen foraging feedback mechanism: pollen foraging is regulated
 % according to the current pollen demand, which is the amount of pollen
-% need for each stage and reserve for next 6 days (Factorstore) need minus
+% need for each stage and reserve for next 6 days (storagelead) need minus
 % to current pollen storage.
-PollenNeed=max(0,PollenDemand*Factorstore-Pt);
+PollenNeed=max(0,PollenDemand*storagelead-Pt);
 
 %Number of pollen foragers to recruit
 NeedPollenForager=PollenNeed/foragingsuccess; 
@@ -268,5 +268,13 @@ Nt = A*Nt; % structured dynamics for bees - output is a vector
 Nt(1) = R; % number of eggs laid today, these are now the age zero eggs
 
 nextstate = [Vt; Pt; Ht; R; Nt];
+
+% subplot(2,1,1)
+% plot(Nt,'ko-')
+% title(sprintf('Day %3d',date))
+% ylim([0,2000])
+% subplot(2,1,2)
+% plot(survivorship,'gx-'); ylim([0,1]);
+% pause(0.2)
 
 return
