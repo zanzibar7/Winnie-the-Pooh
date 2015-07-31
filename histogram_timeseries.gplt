@@ -21,5 +21,7 @@ set xrange [0:2*360]
 
 plot dfile using 2, for [i=3:7] '' using i
 set output
-set term x11
-replot
+
+#set term x11;
+#replot
+exit
