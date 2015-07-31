@@ -145,11 +145,12 @@ survivorship = ([1, 1, 1, 1-p_precocious, 1, 1-p_reversion].*(stageship.^(1./sum
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Everything here just relates to storage and matrix multiplication.
-theta = rt*ones(agemax-1,1); % theta = probabilities of retarded development at each stage
+theta = rt*ones(agemax,1); % theta = probabilities of retarded development at each stage
+theta(1) = 0.; % can not have retardation of first stage
 	%all zeros right now
 % A is a matrix that stores the survival rate for each stage
 
-A = (diag(1-theta,-1)+diag([0;theta]))*diag(survivorship);
+A = (diag(theta)+diag(1-theta(1:end-1),-1))*diag(survivorship);
 
 %% WARNING: explicit stage-structure dependence in code!!!!!!!!!!!!!!!!!!!!!
 
