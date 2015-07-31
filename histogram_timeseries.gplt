@@ -1,0 +1,25 @@
+#!/usr/bin/gnuplot -persist
+
+set key invert reverse Left
+set key autotitle columnheader
+set auto x
+#unset xtics
+#set xtics nomirror rotate by -45 scale 0
+set style data histogram
+set style histogram rowstacked
+set style fill solid noborder
+set boxwidth 1
+dfile = 't.data'
+set datafile separator ','
+set term postscript eps enhanced color "Helvetica,18"
+set output 'timeseries.eps'
+
+set title "Bee time series"
+set ylabel "Number of bees"
+set xlabel "Number of bees"
+set xrange [0:2*360]
+
+plot dfile using 2, for [i=3:7] '' using i
+set output
+set term x11
+replot
