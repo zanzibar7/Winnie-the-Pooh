@@ -127,9 +127,14 @@ IndexNursing = max(0,min(1,IndexNursing));
 % Indexhoney = max([0 min([1 Ht/HoneyDemand])]); %max(0,min(1,Ht/(HoneyDemand)))
 
 
+% 1-(1-IndexNursing)^6
 % nonlinear feedbacks on survivorships
-stageship = stageship.*[max(0,min(1,1-(1-IndexNursing)^6)), \
-	min(1,max(0,1-(1-IndexPollen*IndexNursing)^8)), 1, 1, 1, 1];
+stageship = stageship.*max([zeros(1,6); min([ones(1,6); [ \
+	1, \
+	func_A(IndexPollen*IndexNursing,0.15,1e18) \
+	1, \
+	1-IndexNursing, \
+	1, 1]])]);
 survivorship = (stageship.^(1./sum(STAGEMATRIX')))*STAGEMATRIX;
 %
 % survivorship(1:3) is the daily survival rate of egg stage at age(i=1-3) 
