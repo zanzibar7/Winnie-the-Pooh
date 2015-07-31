@@ -17,6 +17,7 @@ end
 
 if ( 0 == exist('hsurf','var') || isempty(hsurf) )
 	disp('Precomputing nector surface');
+	disp('WARNING:  This could take days...');
     trialsurf;
 end
 
@@ -24,7 +25,7 @@ end
 %%%% Intializations
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-numyears = 3;
+numyears = 2;
 summerdays = 240;
 yeardays = 360;
 
@@ -133,6 +134,6 @@ timfigs(Spop', [Ppop;Hpop]', Rpop);
 
 format long;
 disp(sum(sum(Spop)));
-testval = 20329600.2833733;
+testval = 13592076.3176541;
 assert( abs( testval - sum(sum(Spop))) < 5e-8 );
 format short;
