@@ -131,6 +131,12 @@ end %END OF LOOP THROUGH MULTIPLE YEARS
 % FARatio=Spop(6,1:360*numyears)./(Spop(4,1:360*numyears)+Spop(5,1:360*numyears));
 
 timfigs(Spop', [Ppop;Hpop]', Rpop); 
+n = length(Vpop);
+timeseries = [1:n; Spop; Vpop; Ppop; Hpop; Rpop]';
+headers=["day,egg,larva,pupa,nurse,house,forager,vacant,pollen,honey,laying",0];
+dlmwrite('t.data',headers,'');
+dlmwrite('t.data',timeseries,'-append');
+save -ascii 'timeseries.data' timeseries;
 
 format long;
 disp(sum(sum(Spop)));
