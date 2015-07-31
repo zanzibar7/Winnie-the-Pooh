@@ -120,14 +120,14 @@ end
 
 % the level of the pollen stores in relation to the demand situation of the colony.
 %got rid of +1s in the denominators
-Indexpollen = max([0  min([1 Pt/(PollenDemand*Factorstore + 1) ])] );%max(0,min(1,Pt/(PollenDemand*Factorstore)))
+IndexPollen = max([0  min([1 Pt/(PollenDemand*Factorstore + 1) ])] );%max(0,min(1,Pt/(PollenDemand*Factorstore)))
 % The level of the active nurse bees population in relation to the total nursing demand of all brood stages.
 IndexNursing = max(0,min(1,stage(4)/((stage(2)+stage(1))*FactorBroodNurse+1)));
 % Indexhoney = max([0 min([1 Ht/HoneyDemand])]); %max(0,min(1,Ht/(HoneyDemand)))
 
 
 % nonlinear feedbacks on survivorships
-stageship = stageship.*[1, min(1,max(0,1-0.15*(1-Indexpollen*IndexNursing))), \
+stageship = stageship.*[1, min(1,max(0,1-0.15*(1-IndexPollen*IndexNursing))), \
 	1, max(0,min(1,1-IndexNursing)), 1, 1];
 survivorship = (stageship.^(1./sum(STAGEMATRIX')))*STAGEMATRIX;
 %
