@@ -132,7 +132,7 @@ end %END OF LOOP THROUGH MULTIPLE YEARS
 timfigs(Spop', [Ppop;Hpop]', Rpop); 
 n = length(Vpop);
 timeseries = [1:n; Spop; Vpop; Ppop; Hpop; Rpop]';
-headers=["day,egg,larva,pupa,nurse,house,forager,vacant,pollen,honey,laying",0];
+headers='Day,Eggs,Larvae,Pupae,Nurse bees,House bees,Foragers,Vacant cells,Pollencells,Honey cells,Eggs lain';
 dlmwrite('t.data',headers,'');
 dlmwrite('t.data',timeseries,'-append');
 save -ascii 'timeseries.data' timeseries;
