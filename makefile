@@ -7,8 +7,8 @@ MSIM+=hive_summer.m
 MSIM+=hive_winter.m 
 MSIM+=one_summer_day.m 
 MSIM+=one_winter_day.m 
-MSIM+=threhold.m 
 MSIM+=timfigs.m 
+MSIM+=snapframe.m 
 
 MSURF:=
 MSURF+=trialsurf.m 
@@ -26,5 +26,3 @@ t.data: timoutput.eps
 
 timoutput.eps: $(MSIM)
 	/usr/bin/octave -q simulator.m
-
-

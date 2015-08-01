@@ -269,12 +269,6 @@ Nt(1) = R; % number of eggs laid today, these are now the age zero eggs
 
 nextstate = [Vt; Pt; Ht; R; Nt];
 
-% subplot(2,1,1)
-% plot(Nt,'ko-')
-% title(sprintf('Day %3d',date))
-% ylim([0,2000])
-% subplot(2,1,2)
-% plot(survivorship,'gx-'); ylim([0,1]);
-% pause(0.2)
+snapframe(date, nextstate, survivorship);
 
 return
