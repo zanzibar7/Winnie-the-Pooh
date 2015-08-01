@@ -50,10 +50,7 @@ STAGEMATRIX(6,49:agemax)=1;
 % initial number of house bees= 3000/ 6 days
 % initial number of forager bees = 3000 / 12 days
 STAGES0 = [0, 200, 160, 187, 500, 250];
-N = zeros(agemax,1);
-for i=1:6
-	N = N + G(i,:)'*STAGES0(1,i);
-end
+N = (STAGES0*STAGEMATRIX)';
 
 STATE0 = [V0; P0; H0; R0; N]; % This hold the initial state
 
