@@ -5,7 +5,7 @@ global hsurfX hsurfY hsurf; % the interpolated surface of NectarODE and honeycol
 p_precocious = 0; % probability of nurse bee precociously developing to forager
 p_reversion = 0; % reversed probability between foragers and nurse bees;
 broodnurseratio = 2.65; % One nurse bee can heat 2.65 brood cells - NOT CRUCIAL.. but probably closer to 5
-p_slow = 0*1e-10; %probability of individual bee retardant developing to next age class
+p_slow = 1e-3; %probability of individual bee retardant developing to next age class
 
 queen_efficiency = 1; % downregulation of queen egg laying, used in perturbed hive scenarios
 
@@ -130,10 +130,10 @@ IndexNursing = max(0,min(1,IndexNursing));
 % 1-(1-IndexNursing)^6
 % nonlinear feedbacks on survivorships
 stageship = stageship.*max([zeros(1,6); min([ones(1,6); [ \
-	1, \
-	func_A(IndexPollen*IndexNursing,0.15,1e18) \
-	1, \
-	1-IndexNursing, \
+	func_A(IndexNursing,0.05,1e4), \
+	func_A(IndexPollen*IndexNursing,0.15,1e2), \
+	func_A(IndexNursing,0.05,1e4), \
+	func_A(IndexNursing,0.08,1e4), \
 	1, 1]])]);
 survivorship = (stageship.^(1./sum(STAGEMATRIX')))*STAGEMATRIX;
 %
