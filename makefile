@@ -2,7 +2,6 @@
 MSIM:=
 MSIM+=simulator.m 
 MSIM+=createfigs.m 
-MSIM+=func_A.m 
 MSIM+=hive_summer.m 
 MSIM+=hive_winter.m 
 MSIM+=one_summer_day.m 
@@ -16,13 +15,16 @@ MSURF+=honeycollection.m
 MSURF+=nectarODE_matlab.m 
 MSURF+=nectarODE_octave.m 
 
-all: timeseries.eps
+all: figures/timeseries.eps
 
-timeseries.eps: histogram_timeseries.gplt t.data
-	/usr/bin/gnuplot histogram_timeseries.gplt 
+figures/timeseries.eps: figures/histogram_timeseries.gplt data/timeseries.data
+	/usr/bin/gnuplot $<
 
-t.data: timoutput.eps
+data/timeseries.data: figures/timoutput.eps
 
-
-timoutput.eps: $(MSIM)
+figures/timoutput.eps: $(MSIM)
 	/usr/bin/octave -q simulator.m
+
+clean:
+	rm -rf data/state/*.data data/survivorship/*.data data/*.data
+	rm -rf figures/*.eps figures/*.gif

@@ -9,10 +9,10 @@ set style data histogram
 set style histogram rowstacked
 set style fill solid noborder
 set boxwidth 1
-dfile = 't.data'
+dfile = 'data/timeseries.data'
 set datafile separator ','
 set term postscript eps enhanced color "Helvetica,18"
-set output 'timeseries.eps'
+set output 'figures/timeseries.eps'
 
 set title "Bee time series"
 set ylabel "Number of bees"

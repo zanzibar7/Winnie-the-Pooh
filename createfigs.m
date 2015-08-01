@@ -113,7 +113,7 @@ ylabel('Weight (kg) - no equip');
 
 
 
-print -depsc output.eps
+print -depsc figures/output.eps
 
 close()
 

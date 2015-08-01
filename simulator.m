@@ -133,9 +133,9 @@ timfigs(Spop', [Ppop;Hpop]', Rpop);
 n = length(Vpop);
 timeseries = [1:n; Spop; Vpop; Ppop; Hpop; Rpop]';
 headers='Day,Eggs,Larvae,Pupae,Nurse bees,House bees,Foragers,Vacant cells,Pollencells,Honey cells,Eggs lain';
-dlmwrite('t.data',headers,'');
-dlmwrite('t.data',timeseries,'-append');
-save -ascii 'timeseries.data' timeseries;
+dlmwrite('data/timeseries.data',headers,'');
+dlmwrite('data/timeseries.data',timeseries,'-append');
+%save -ascii 'timeseries.data' timeseries;
 
 format long;
 disp(sum(sum(Spop)));

@@ -56,4 +56,6 @@ N = A*N;
 N(1) = 1; %R; 
 nextstate = [ V; P; H; R; N ];
 
+snapframe(date, nextstate, survivorship);
+
 return
