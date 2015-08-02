@@ -6,35 +6,40 @@ gplooper=`sed -n '/^#gnuplot02#/,/#gnuplot02#/p' $0| grep -v "^#" `
 # make temporary file name
 n=`basename $0 | cut -d '.' -f 1`; nn=XXXX.gplt; fname=`mktemp $n$nn`
 
+lastday=`find data/state/ | sort | tail -n 1 | xargs -I {} basename {} .data`
+echo $lastday
+
 # load loop code into temporary file
-touch $fname; echo $gplooper >> $fname
+touch $fname; echo "$gplooper" >> $fname
 
 # run everything
 runcommand="load '$fname';"
-echo $gpheader $runcommand | gnuplot
+echo "$gpheader timer_end = $lastday;  $runcommand" | gnuplot
 rm $fname
 echo "Now do                                "
 echo "            animate -loop 1 /tmp/animation.gif"
-echo "               cp   /tmp/animation.gif ./ "
-echo "            animate      animation.gif"
+echo "               cp   /tmp/animation.gif ./figures/state.gif "
+echo "            animate      ./figures/state.gif"
 exit
 
 #gnuplot01#
-timer_end = 230;
 timer = 1;
 dt = 1;
 set yrange [0:2000];
 set xrange [0:60];
 set xlabel 'Age';
 set ylabel 'Count';
-set terminal gif animate delay 40;
+set terminal gif animate delay 5;
 set nokey;
 set output '/tmp/animation.gif';
 #gnuplot01#
 
 
 #gnuplot02#
-dfile=sprintf("../data/state_%04d.data",timer);
+dfile=sprintf("data/state/%04d.data",timer);
+set title sprintf("Day %d", timer);
+set xlabel "Age" font "Helvetica,18";
+set ylabel "Number" font "Helvetica,18";
 plot dfile every 1:1:5   w imp lc 0 lw 3;
 timer = timer + dt;
 if (timer<=timer_end) reread;
