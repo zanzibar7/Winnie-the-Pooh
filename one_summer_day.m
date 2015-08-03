@@ -74,14 +74,14 @@ n_brood = sum(sum(STAGEMATRIX')(1:3));
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % %% Current conditions in bee hive %%%%%%%%
-Vt = state(1); % vacant cells 
-Pt = state(2); % pollen stores
-Ht = state(3); % honey stores at time t. 
+V = state(1); % vacant cells 
+P = state(2); % pollen stores
+H = state(3); % honey stores at time t. 
 % We don't care about state(4), because those are now the 1-day old eggs,
 % and the new state(4) will only depend on how many eggs are layed now.
-Nt = state(5:end);% bee number at time t 
+N = state(5:end);% bee number at time t 
 
-stage = STAGEMATRIX*Nt;
+stage = STAGEMATRIX*N;
 
 %  %%%%%%%%%%% Fungicide treatments
 %  %day of the year on which pesticide treatment was applied : 
@@ -119,12 +119,12 @@ end
 % storage.
 
 % Fraction of the pollen stores in relation to demand of the colony
-IndexPollen = Pt/(PollenDemand*storagelead + 1);
+IndexPollen = P/(PollenDemand*storagelead + 1);
 IndexPollen = max(0,min(1,IndexPollen));
 % Nurse bees per total nursing demand of eggs and larva
 IndexNursing = stage(4)/((stage(2)+stage(1))*broodnurseratio+1);
 IndexNursing = max(0,min(1,IndexNursing));
-% Indexhoney = max([0 min([1 Ht/HoneyDemand])]); %max(0,min(1,Ht/(HoneyDemand)))
+% Indexhoney = max([0 min([1 H/HoneyDemand])]); %max(0,min(1,H/(HoneyDemand)))
 
 
 % 1-(1-IndexNursing)^6
@@ -188,18 +188,18 @@ end
 %% Food is consumed, new eggs are layed
 
 % The removal of dead brood, hygenic behavior gives total number of scavanged cells
-% -- this was the line that was generating an error before- causing Vt to be a matrix
-scavanged = (1-survivorship(1:n_brood))*Nt(1:n_brood);
+% -- this was the line that was generating an error before- causing V to be a matrix
+scavanged = (1-survivorship(1:n_brood))*N(1:n_brood);
 
 % pollen consumption of egg, larval, nurse and house bee stage
-polleneaten =  min([Pt, PollenDemand]); 
+polleneaten =  min([P, PollenDemand]); 
 
 % honey consumption of larval, nurse, house and forager bee stage
-honeyeaten= min([Ht, HoneyDemand]); 
+honeyeaten= min([H, HoneyDemand]); 
 
 % Empty Cells due to the cleaned food cells and adult emergence
-vacated = Nt(n_brood) + polleneaten + honeyeaten; %check this, maybe not Nt(26)- maybe Nt1(26)?
-Vt = Vt + vacated + scavanged ;
+vacated = N(n_brood) + polleneaten + honeyeaten; %check this, maybe not N(26)- maybe N1(26)?
+V = V + vacated + scavanged ;
 %Actual eggs layed by queen this day determined here
 if (stage(4)+stage(5)+stage(6))<= 10 % the minimum requirement of number of bees needed to be around a queen bee
     disp('HIVE COLLAPSED, leq 10 adult bees left')
@@ -210,16 +210,16 @@ else
     % the nursing workforce and the available hive space - the function below is
     % the one in the documentation, but this layer of complexsity can be
     % added later!
-    %Vt+vacated+scavanged cells gives how many cells are allocated to 
-    %R = min([queen_efficiency*maxProduction,stage(4)*broodnurseratio,Vt+vacated+scavangedcells]);
+    %V+vacated+scavanged cells gives how many cells are allocated to 
+    %R = min([queen_efficiency*maxProduction,stage(4)*broodnurseratio,V+vacated+scavangedcells]);
     %queen_efficiency is set to 1 currently- simplified, always max production
 
-    R = min([Vt, queen_efficiency*maxProduction]); 
+    R = min([V, queen_efficiency*maxProduction]); 
     %the only cap on the egg laying right now is the 
 end 
 %UPDATE VACANT CELL COUNT
-Vt = Vt - R ;
-if Vt == 0
+V = V - R ;
+if V == 0
 	disp('ran out of space after eggs laid')
 	disp(date)
 end
@@ -230,7 +230,7 @@ end
 % according to the current pollen demand, which is the amount of pollen
 % need for each stage and reserve for next 6 days (storagelead) need minus
 % to current pollen storage.
-PollenNeed=max(0,PollenDemand*storagelead-Pt);
+PollenNeed=max(0,PollenDemand*storagelead-P);
 
 %Number of pollen foragers to recruit
 NeedPollenForager=PollenNeed/foragingsuccess; 
@@ -245,10 +245,10 @@ PollenForager=max(stage(6)*0.01, min(NeedPollenForager,stage(6)*.33)); %%THIS on
 
 % pollen storage depends on the available cells in the hive
 % and the foraging collection efficiency of the pollen forager---assumption for pollen foraging behavior
-storedpollen = max([0, min([PollenForager*0.48, Vt])]);
+storedpollen = max([0, min([PollenForager*0.48, V])]);
 
-Vt = Vt - storedpollen;
-if Vt == 0
+V = V - storedpollen;
+if V == 0
 	disp('ran out of space after food stored')
 	disp(date)
 end
@@ -263,17 +263,17 @@ if ( 0==exist('predictedhoney','var') || isnan(predictedhoney) \
 		|| predictedhoney<0 )
 	predictedhoney=1.e-3;
 end
-storedhoney = min([predictedhoney, Vt]);
+storedhoney = min([predictedhoney, V]);
     
-Vt = Vt - storedhoney;
+V = V - storedhoney;
  
 %% Pollen, Honey, Cells net input 
-Pt = max(0, Pt - polleneaten + storedpollen); % Updated pollen stores at end of day
-Ht = Ht + storedhoney - honeyeaten; % Updated honey stores at end of day, capped by total size of hive
-Nt = A*Nt; % structured dynamics for bees - output is a vector
-Nt(1) = R; % number of eggs laid today, these are now the age zero eggs
+P = max(0, P - polleneaten + storedpollen); % Updated pollen stores at end of day
+H = H + storedhoney - honeyeaten; % Updated honey stores at end of day, capped by total size of hive
+N = A*N; % structured dynamics for bees - output is a vector
+N(1) = R; % number of eggs laid today, these are now the age zero eggs
 
-nextstate = [Vt; Pt; Ht; R; Nt];
+nextstate = [V; P; H; R; N];
 
 snapframe(date, nextstate, survivorship);
 
