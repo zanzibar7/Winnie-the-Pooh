@@ -39,6 +39,9 @@ end
 
 A = (diag(1-theta,-1)+diag([0;theta]))*diag(survivorship);
 A(end,end) = survivorship(end);
+%A(1,1) = 1 - 1e-5; A(2,1) = 0.; % long-lived winter eggs
+%A(2,2) = 1 - 1e-5; A(3,2) = 0.; % long-lived winter eggs
+%A(3,3) = 1; A(4,3) = 0.; % long-lived winter eggs ??? (extinguishes population)
 
 %% Food, Empty Cell dynamics
 honeyeaten = min([H, honeyconsumption*stage]);
@@ -59,7 +62,7 @@ H = H - honeyeaten; % The net honey storage at the end of the day.
 if H == 0
 	disp(sprintf('day %d : ran out of honey',date));
 end
-V = V + vacated - R + scavangedcells; % The net vacant cells
+V = V + vacated + scavangedcells - R; % The net vacant cells
 N = A*N;
 N(1) = R;
 

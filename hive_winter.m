@@ -15,10 +15,10 @@ function [V, P, H, R, S] = hive_winter(year, summerdays, yeardays,
 
 		% extract information from state
 		i = t - (yeardays*year+summerdays);
-		V(1,i) = STATE(1);
-		P(1,i) = STATE(2);
-		H(1,i) = STATE(3);
-		R(1,i) = STATE(4);
+		V(i) = STATE(1);
+		P(i) = STATE(2);
+		H(i) = STATE(3);
+		R(i) = STATE(4);
 		S(:,i) = WINTERSTAGES*STATE(4:end);
 
 		%error checking

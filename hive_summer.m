@@ -14,21 +14,25 @@ function [V, P, H, R, S] = hive_summer(year, summerdays, yeardays,
 
 		% extract information from state
 		i = t - yeardays*year;
-		V(1,i) = STATE(1);
-		P(1,i) = STATE(2);
-		H(1,i) = STATE(3);
-		R(1,i) = STATE(4);
+		V(i) = STATE(1);
+		P(i) = STATE(2);
+		H(i) = STATE(3);
+		R(i) = STATE(4);
 		S(:,i) = SUMMERSTAGES*STATE(4:end);
 
 		%error checking
 		if STATE(2) == 0
+			H(i:end) = H(i);
 			break
 		end
 		if STATE(3) == 0
+			P(i:end) = P(i);
 			break
 		end
 		if S(4,i)+S(5,i)+S(6,i) < 10
 			disp(sprintf('day %d : Hive collapsed',t));
+			H(i:end) = H(i);
+			P(i:end) = P(i);
 			break
 		end
 	end
