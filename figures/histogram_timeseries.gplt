@@ -16,11 +16,13 @@ set output 'figures/timeseries.eps'
 
 set title "Bee time series"
 set ylabel "Number of bees"
-set xlabel "Number of bees"
+set xlabel "Day since start"
 set xrange [0:3*360]
 
 plot dfile using 2, for [i=3:7] '' using i
 set output
+
+! epstopdf figures/timeseries.eps -o figures/timeseries.pdf
 
 #set term x11;
 #replot

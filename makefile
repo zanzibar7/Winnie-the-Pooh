@@ -21,12 +21,16 @@ figures/timeseries.eps: figures/histogram_timeseries.gplt data/timeseries.data
 
 figures/timoutput.eps: data/timeseries.data
 
-data/timeseries.data: $(MSIM)
+data/timeseries.data: $(MSIM) hsurf.data
 	/usr/bin/octave -q simulator.m
 
 figures/state.gif: figures/state_gif_movie.sh data/timeseries.data
 	$<
 
+hsurf.data: $(MSURF)
+	# also hsurfX.data and hsurfY.data
+	/usr/bin/octave -q trialsurf.m
+	
 clean:
 	rm -rf data/state/*.data data/survivorship/*.data data/*.data
 	rm -rf figures/*.eps figures/*.gif

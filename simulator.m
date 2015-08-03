@@ -47,7 +47,7 @@ SUMMERSTAGES(5,33:42)=1;
 SUMMERSTAGES(6,43:end)=1;
 
 %used for compression age structure from daily to by-class in winter
-agemaxwinter = 150; % max life of winter bee
+agemaxwinter = 60; % max life of winter bee
 WINTERSTAGES = zeros(4,agemaxwinter);
 WINTERSTAGES(1,1:3)=1;
 WINTERSTAGES(2,4:11)=1;
