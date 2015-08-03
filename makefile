@@ -2,12 +2,10 @@
 MSIM:=
 MSIM+=simulator.m 
 MSIM+=createfigs.m 
-MSIM+=func_A.m 
 MSIM+=hive_summer.m 
 MSIM+=hive_winter.m 
 MSIM+=one_summer_day.m 
 MSIM+=one_winter_day.m 
-MSIM+=threhold.m 
 MSIM+=timfigs.m 
 
 MSURF:=
