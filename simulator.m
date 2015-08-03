@@ -36,26 +36,15 @@ Ppop=zeros(1,yeardays*numyears); % pollen
 Hpop=zeros(1,yeardays*numyears); % honey
 Rpop=zeros(1,yeardays*numyears); % egg production
 
-% old stages
-agemaxsummer = 60; % max life of a summer bee, +1 because of matlab indexing
+% new stages
+agemaxsummer = 50; % max life of a summer bee, +1 because of matlab indexing
 SUMMERSTAGES = zeros(6,agemaxsummer);
 SUMMERSTAGES(1,1:3)=1;
-SUMMERSTAGES(2,4:11)=1;
-SUMMERSTAGES(3,12:26)=1;
-SUMMERSTAGES(4,27:42)=1;
-SUMMERSTAGES(5,43:48)=1;
-SUMMERSTAGES(6,49:end)=1;
-
-%%% new stages
-% agemaxsummer = 50; % max life of a summer bee, +1 because of matlab indexing
-% agemaxwinter = 150; % max life of winter bee
-% SUMMERSTAGES = zeros(6,agemaxsummer);
-% SUMMERSTAGES(1,1:3)=1;
-% SUMMERSTAGES(2,4:8)=1;
-% SUMMERSTAGES(3,9:20)=1;
-% SUMMERSTAGES(4,21:32)=1;
-% SUMMERSTAGES(5,33:42)=1;
-% SUMMERSTAGES(6,43:end)=1;
+SUMMERSTAGES(2,4:8)=1;
+SUMMERSTAGES(3,9:20)=1;
+SUMMERSTAGES(4,21:32)=1;
+SUMMERSTAGES(5,33:42)=1;
+SUMMERSTAGES(6,43:end)=1;
 
 %used for compression age structure from daily to by-class in winter
 agemaxwinter = 150; % max life of winter bee
@@ -106,10 +95,13 @@ for year = 0:(numyears-1)
 	i = yeardays*year+1;
 	j = yeardays*year+summerdays;
 	Spop(:,i:j) = S;
-	Vpop(:,i:j) = V;
-	Ppop(:,i:j) = P;
-	Hpop(:,i:j) = H;
-	Rpop(:,i:j) = R;
+	Vpop(i:j) = V;
+	Ppop(i:j) = P;
+	Hpop(i:j) = H;
+	Rpop(i:j) = R;
+	if (sum(S(:,end)) < 10)
+		break
+	end
 
 	disp('    Winter Season Dynamics'); %%%%%%%%%%%%%%%%%%%%
 	N = ((S(:,end)'./sum(TFSW'))*TFSW)';
@@ -122,10 +114,13 @@ for year = 0:(numyears-1)
 	j = yeardays*(year+1);
 	Spop([1,2,3,5],i:j) = S; % stages 4 and 6 are empty in the winter
 							 % but we want to keep a consistent shape for Spop
-	Vpop(1,i:j) = V;
-	Ppop(1,i:j) = P;
-	Hpop(1,i:j) = H;
-	Rpop(1,i:j) = R;
+	Vpop(i:j) = V;
+	Ppop(i:j) = P;
+	Hpop(i:j) = H;
+	Rpop(i:j) = R;
+	if (sum(S(:,end)) < 10)
+		break
+	end
 
 	disp('    Setting up next Summer Season'); %%%%%%%%%%%%%%%%%%%
 	N = ((S(:,end)'./sum(TFWS'))*TFWS)';

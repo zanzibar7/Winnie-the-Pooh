@@ -21,16 +21,15 @@ function [V, P, H, R, S] = hive_summer(year, summerdays, yeardays,
 		S(:,i) = SUMMERSTAGES*STATE(5:end);
 
 		%error checking
-		if STATE(1)== 0
-			disp(['ran out of space, on day: ',num2str(t)])
-			break
-		end
 		if STATE(2) == 0
-			disp(['Hive starved, no pollen, on day: ',num2str(t)])
 			break
 		end
 		if STATE(3) == 0
-			disp(['Hive starved, no honey, on day: ',num2str(t)])
+			break
+		end
+		if S(4,i)+S(5,i)+S(6,i) < 10
+			disp(sprintf('day %d : Hive collapsed',t));
+			break
 		end
 	end
 return

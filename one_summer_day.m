@@ -39,6 +39,9 @@ storagelead=6;
 % forager to make a successful foraging trip(80%)
 foragingsuccess = 0.48;
 
+honeyforagingsuccess = 0.2; % cludge factor to prevent glutteny with colonies 
+	% do not swarm
+
 relativedate = mod(date,360);  %% BUG!!! hard-coded dependence on year length
 
 %% Queen reproduction potential (McLellan et al., 1978)
@@ -220,8 +223,7 @@ end
 %UPDATE VACANT CELL COUNT
 V = V - R ;
 if V == 0
-	disp('ran out of space after eggs laid')
-	disp(date)
+	disp(sprintf('day %d : ran out of space after eggs laid',date));
 end
 
 %% POLLEN FORAGING- field season
@@ -249,8 +251,7 @@ storedpollen = max([0, min([PollenForager*0.48, V])]);
 
 V = V - storedpollen;
 if V == 0
-	disp('ran out of space after food stored')
-	disp(date)
+	disp(sprintf('day %d : ran out of space after pollen stored',date));
 end
 
 %% Honey dynamics-field season 
@@ -263,9 +264,12 @@ if ( 0==exist('predictedhoney','var') || isnan(predictedhoney) \
 		|| predictedhoney<0 )
 	predictedhoney=1.e-3;
 end
-storedhoney = min([predictedhoney, V]);
+storedhoney = min([ predictedhoney*honeyforagingsuccess, V]);
     
 V = V - storedhoney;
+if V == 0
+	disp(sprintf('day %d : ran out of space after honey stored',date));
+end
  
 %% Pollen, Honey, Cells net input 
 P = max(0, P - polleneaten + storedpollen); % Updated pollen stores at end of day

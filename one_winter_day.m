@@ -30,7 +30,6 @@ stage = WINTERSTAGES*N; % 4 stages
 
 if stage(4)<=100  % The minimum number of hive bees in a winter colony (2000-3000), derived from the brood temperature model from M.A.Becher 2010.
 	survivorship = zeros(agemaxwinter,1);
-    disp('dead hive')
 else
 	P_base = 0.999; %baseline survivorship
     P_base = P_base*max(0, 1 - max(0,1-H/(h4*stage(4)+1e-100))); % 1e-100 term prevents division-by-zero issues

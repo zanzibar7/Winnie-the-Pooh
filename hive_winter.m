@@ -22,16 +22,17 @@ function [V, P, H, R, S] = hive_winter(year, summerdays, yeardays,
 		S(:,i) = WINTERSTAGES*STATE(5:end);
 
 		%error checking
-		if STATE(1)== 0
-			disp(['ran out of space, on day: ',num2str(t)])
-			break
-		end
 		if STATE(2) == 0
 			disp(['Hive starved, no pollen, on day: ',num2str(t)])
 			break
 		end
 		if STATE(3) == 0
 			disp(['Hive starved, no honey, on day: ',num2str(t)])
+			break
+		end
+		if S(4,i) < 10
+			disp(['Too few bees left: ',num2str(t)])
+			break
 		end
 	end
 return
