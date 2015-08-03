@@ -1,4 +1,3 @@
-
 MSIM:=
 MSIM+=simulator.m 
 MSIM+=createfigs.m 
@@ -24,6 +23,9 @@ data/timeseries.data: figures/timoutput.eps
 
 figures/timoutput.eps: $(MSIM)
 	/usr/bin/octave -q simulator.m
+
+figures/animation.gif: figures/state_gif_movie.sh data/timeseries.data
+	$<
 
 clean:
 	rm -rf data/state/*.data data/survivorship/*.data data/*.data
