@@ -84,6 +84,9 @@ N = state(4:end);% bee number at time t
 
 stage = STAGEMATRIX*N;
 
+% For a conservation law check
+space_pre = V+P+H+sum(stage(1:3));
+
 %  %%%%%%%%%%% Fungicide treatments
 %  %day of the year on which pesticide treatment was applied : 
 %  % August 1st 2012 = day 150
@@ -183,14 +186,15 @@ for i = jj;
 	A(i,i) = A(i,i)*(1-p_reversion);
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+N_next = A*N; % structured dynamics for bees - output is a vector
 
 
 
-%% Food is consumed, new eggs are layed
+%% Food is consumed, cells freed up by development
 
 % The removal of dead brood, hygenic behavior gives total number of scavanged cells
 % -- this was the line that was generating an error before- causing V to be a matrix
-scavanged = (1-survivorship(1:n_brood))*N(1:n_brood);
+scavanged = sum(N(1:n_brood) - N_next(1:n_brood));
 
 % pollen consumption of egg, larval, nurse and house bee stage
 polleneaten =  min([P, PollenDemand]); 
@@ -199,8 +203,8 @@ polleneaten =  min([P, PollenDemand]);
 honeyeaten= min([H, HoneyDemand]); 
 
 % Empty Cells due to the cleaned food cells and adult emergence
-vacated = N(n_brood) + polleneaten + honeyeaten; %check this, maybe not N(26)- maybe N1(26)?
-V = V + vacated + scavanged ;
+vacated = polleneaten + honeyeaten;
+V = V + vacated + scavanged;
 %Actual eggs layed by queen this day determined here
 if (stage(4)+stage(5)+stage(6))<= 10 % the minimum requirement of number of bees needed to be around a queen bee
     disp('HIVE COLLAPSED, leq 10 adult bees left')
@@ -208,7 +212,7 @@ if (stage(4)+stage(5)+stage(6))<= 10 % the minimum requirement of number of bees
     R = 0;
 else 
     % The actual egg production per day depends on the queen egg laying potential, 
-    % the nursing workforce and the available hive space - the function below is
+    % the nursing workforce and the available hive cells - the function below is
     % the one in the documentation, but this layer of complexsity can be
     % added later!
     %V+vacated+scavanged cells gives how many cells are allocated to 
@@ -221,7 +225,7 @@ end
 %UPDATE VACANT CELL COUNT
 V = V - R ;
 if V == 0
-	disp(sprintf('day %d : ran out of space after eggs laid',date));
+	disp(sprintf('day %d : ran out of cells after eggs laid',date));
 end
 
 %% POLLEN FORAGING- field season
@@ -249,7 +253,7 @@ storedpollen = max([0, min([PollenForager*0.48, V])]);
 
 V = V - storedpollen;
 if V == 0
-	disp(sprintf('day %d : ran out of space after pollen stored',date));
+	disp(sprintf('day %d : ran out of cells after pollen stored',date));
 end
 
 %% Honey dynamics-field season 
@@ -266,17 +270,20 @@ storedhoney = min([ predictedhoney*honeyforagingsuccess, V]);
     
 V = V - storedhoney;
 if V == 0
-	disp(sprintf('day %d : ran out of space after honey stored',date));
+	disp(sprintf('day %d : ran out of cells after honey stored',date));
 end
  
 %% Pollen, Honey, Cells net input 
 P = max(0, P - polleneaten + storedpollen); % Updated pollen stores at end of day
 H = H + storedhoney - honeyeaten; % Updated honey stores at end of day, capped by total size of hive
-N = A*N; % structured dynamics for bees - output is a vector
-N(1) = R; % number of eggs laid today, these are now the age zero eggs
-
-nextstate = [V; P; H; N];
+N_next(1) = R; % number of eggs laid today, these are now the age zero eggs
+nextstate = [V; P; H; N_next];
 
 snapframe(date, nextstate, survivorship);
+
+% Check that the number of cells is being conserved over time...
+stage = STAGEMATRIX*N_next;
+space_post = V+P+H+sum(stage(1:3));
+assert( abs(space_pre - space_post) < 1e-6 );
 
 return
