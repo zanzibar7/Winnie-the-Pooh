@@ -19,12 +19,12 @@ all: figures/timeseries.eps
 figures/timeseries.eps: figures/histogram_timeseries.gplt data/timeseries.data
 	/usr/bin/gnuplot $<
 
-data/timeseries.data: figures/timoutput.eps
+figures/timoutput.eps: data/timeseries.data
 
-figures/timoutput.eps: $(MSIM)
+data/timeseries.data: $(MSIM)
 	/usr/bin/octave -q simulator.m
 
-figures/animation.gif: figures/state_gif_movie.sh data/timeseries.data
+figures/state.gif: figures/state_gif_movie.sh data/timeseries.data
 	$<
 
 clean:

@@ -27,7 +27,7 @@ set xlabel 'Age';
 set ylabel 'Count';
 set terminal gif animate delay 5;
 set nokey;
-set output 'figures/state_animation.gif';
+set output 'figures/state.gif';
 #gnuplot01#
 
 
