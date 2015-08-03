@@ -1,7 +1,7 @@
-function nextstate = one_winter_day(state,date,WINTERSTAGEMATRIX) % For winter bee dynamics 
+function nextstate = one_winter_day(state,date,WINTERSTAGES)
 
-agemaxwinter=max(size(WINTERSTAGEMATRIX)); % indexing in matlab starts at 1, so add an extra day
-n_brood = sum(sum(WINTERSTAGEMATRIX')(1:3));
+agemaxwinter=max(size(WINTERSTAGES));
+n_brood = sum(sum(WINTERSTAGES')(1:3));
 
 %%%%%%%%%%%%%%%%%%%%%%%% Parameter Set %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -16,6 +16,8 @@ a2 = pollenconsumption(2);
 honeyconsumption = [0, 0.0297, 0, 0.022];
 h4 = honeyconsumption(4);
 
+theta = .001*ones(agemaxwinter-1,1); % theta = probabilities of development retardation
+
 %%%%%%%%%%%%%%%%%%%%%%%% Hive Dynamics %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%% Empty Cell+Pollen Cells + Honey Cells+Brood Cells =Hive Space
 %%%% Current conditions in bee hive
@@ -24,7 +26,7 @@ P = state(2); % ollen cells
 H = state(3); % honey cells
 R = state(4); % egg cells
 N = state(5:end);% bee number at time t
-stage = WINTERSTAGEMATRIX*N; % 4 stages
+stage = WINTERSTAGES*N; % 4 stages
 
 if stage(4)<=100  % The minimum number of hive bees in a winter colony (2000-3000), derived from the brood temperature model from M.A.Becher 2010.
 	survivorship = zeros(agemaxwinter,1);
@@ -33,10 +35,11 @@ else
 	P_base = 0.999; %baseline survivorship
     P_base = P_base*max(0, 1 - max(0,1-H/(h4*stage(4)+1e-100))); % 1e-100 term prevents division-by-zero issues
     k = max(0, (1 - max(0,1-P/(a2*stage(2)+1e-100))));
-    survivorship = (P_base*[ 1, k, 1, 1]*WINTERSTAGEMATRIX)';
+    survivorship = (P_base*[ 1, k, 1, 1]*WINTERSTAGES)';
 end 
-theta = .01*ones(agemaxwinter-1,1); % theta = probabilities of development retardation
+
 A = (diag(1-theta,-1)+diag([0;theta]))*diag(survivorship);
+A(end,end) = survivorship(end);
 
 %% Food, Empty Cell dynamics
 honeyeaten = min([H, honeyconsumption*stage]);
