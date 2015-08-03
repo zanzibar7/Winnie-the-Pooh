@@ -18,7 +18,7 @@ function [V, P, H, R, S] = hive_summer(year, summerdays, yeardays,
 		P(1,i) = STATE(2);
 		H(1,i) = STATE(3);
 		R(1,i) = STATE(4);
-		S(:,i) = SUMMERSTAGES*STATE(5:end);
+		S(:,i) = SUMMERSTAGES*STATE(4:end);
 
 		%error checking
 		if STATE(2) == 0

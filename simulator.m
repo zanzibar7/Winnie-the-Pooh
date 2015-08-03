@@ -74,8 +74,9 @@ R0=0; %initial eggs
 % initial number of forager bees = 3000/12 days
 S0 = [0, 1600, 2400, 3000, 3000, 3000]; % initial state by stages
 N0 = ((S0./sum(SUMMERSTAGES'))*SUMMERSTAGES)';
+N0(1) = R0;
 
-STATE = [V0; P0; H0; R0; N0]; % This hold the initial state
+STATE = [V0; P0; H0; N0]; % This hold the initial state
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -106,7 +107,7 @@ for year = 0:(numyears-1)
 	disp('    Winter Season Dynamics'); %%%%%%%%%%%%%%%%%%%%
 	N = ((S(:,end)'./sum(TFSW'))*TFSW)';
 	assert( abs(sum(N) - sum(S(:,end))) < 1e-1); % check for conversion bug
-	STATE = [V(:,end); P(:,end); H(:,end); R(:,end); N];
+	STATE = [V(:,end); P(:,end); H(:,end); N];
 
 	[V, P, H, R, S] = \
 		hive_winter(year,summerdays,yeardays, STATE, WINTERSTAGES);
@@ -125,7 +126,7 @@ for year = 0:(numyears-1)
 	disp('    Setting up next Summer Season'); %%%%%%%%%%%%%%%%%%%
 	N = ((S(:,end)'./sum(TFWS'))*TFWS)';
 	assert( abs(sum(N) - sum(S(:,end))) < 1e-1); % check for conversion bug
-	STATE = [V(:,end); P(:,end); H(:,end); R(:,end); N];
+	STATE = [V(:,end); P(:,end); H(:,end); N];
 end %END OF LOOP THROUGH MULTIPLE YEARS
 
 timfigs(Spop', [Ppop;Hpop]', Rpop); 

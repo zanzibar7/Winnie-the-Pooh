@@ -80,9 +80,7 @@ n_brood = sum(sum(STAGEMATRIX')(1:3));
 V = state(1); % vacant cells 
 P = state(2); % pollen stores
 H = state(3); % honey stores at time t. 
-% We don't care about state(4), because those are now the 1-day old eggs,
-% and the new state(4) will only depend on how many eggs are layed now.
-N = state(5:end);% bee number at time t 
+N = state(4:end);% bee number at time t 
 
 stage = STAGEMATRIX*N;
 
@@ -277,7 +275,7 @@ H = H + storedhoney - honeyeaten; % Updated honey stores at end of day, capped b
 N = A*N; % structured dynamics for bees - output is a vector
 N(1) = R; % number of eggs laid today, these are now the age zero eggs
 
-nextstate = [V; P; H; R; N];
+nextstate = [V; P; H; N];
 
 snapframe(date, nextstate, survivorship);
 

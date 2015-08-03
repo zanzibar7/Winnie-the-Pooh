@@ -19,19 +19,17 @@ function [V, P, H, R, S] = hive_winter(year, summerdays, yeardays,
 		P(1,i) = STATE(2);
 		H(1,i) = STATE(3);
 		R(1,i) = STATE(4);
-		S(:,i) = WINTERSTAGES*STATE(5:end);
+		S(:,i) = WINTERSTAGES*STATE(4:end);
 
 		%error checking
 		if STATE(2) == 0
-			disp(['Hive starved, no pollen, on day: ',num2str(t)])
 			break
 		end
 		if STATE(3) == 0
-			disp(['Hive starved, no honey, on day: ',num2str(t)])
 			break
 		end
 		if S(4,i) < 10
-			disp(['Too few bees left: ',num2str(t)])
+			disp(sprintf('day %d : Hive collapsed',t));
 			break
 		end
 	end
