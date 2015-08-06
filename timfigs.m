@@ -34,7 +34,7 @@ function timfigs(STAGE, STORAGE, EGGS)
 	xlabel('Day','fontsize',24);
 	xlim([0,L]);
 
-	print -depsc figures/timoutput.eps
+	print -depsc figures/standard_timeseries.eps
 
 	close()
 

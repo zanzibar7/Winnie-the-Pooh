@@ -14,12 +14,13 @@ MSURF+=honeycollection.m
 MSURF+=nectarODE_matlab.m 
 MSURF+=nectarODE_octave.m 
 
-all: figures/timeseries.eps
+all: figures/stacked_timeseries.eps figures/standard_timeseries.pdf
 
-figures/timeseries.eps: figures/histogram_timeseries.gplt data/timeseries.data
+figures/stacked_timeseries.eps: figures/histogram_timeseries.gplt data/timeseries.data
 	/usr/bin/gnuplot $<
 
-figures/timoutput.eps: data/timeseries.data
+figures/standard_timeseries.pdf: data/timeseries.data
+	epstopdf figures/standard_timeseries.eps --outfile=$@
 
 data/timeseries.data: $(MSIM) hsurf.data
 	/usr/bin/octave -q simulator.m
@@ -30,7 +31,7 @@ figures/state.gif: figures/state_gif_movie.sh data/timeseries.data
 hsurf.data: $(MSURF)
 	# also hsurfX.data and hsurfY.data
 	/usr/bin/octave -q trialsurf.m
-	
+
 clean:
-	rm -rf data/state/*.data data/survivorship/*.data data/*.data
-	rm -rf figures/*.eps figures/*.gif
+	rm data/state/*.data data/survivorship/*.data data/*.data
+	rm figures/*.eps figures/*.gif figures/*.pdf
