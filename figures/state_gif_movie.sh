@@ -1,13 +1,22 @@
 #!/bin/dash
 
+# the gnuplot script raises an error if it cannot find the figure directory
+# where it expects to, so we test ahead of time
+[ -d "figures" ] || echo "Error: I expect to be run from /home/code/bees/Winnie-the-Pooh" 
+[ -d "figures" ] || exit
+
 gpheader=`sed -n '/^#gnuplot01#/,/#gnuplot01#/p' $0| grep -v "^#" `
 gplooper=`sed -n '/^#gnuplot02#/,/#gnuplot02#/p' $0| grep -v "^#" `
 
 # make temporary file name
-n=`basename $0 | cut -d '.' -f 1`; nn=XXXX.gplt; fname=`mktemp /tmp/$n$nn`
+n=`basename $0 | cut -d '.' -f 1`;
+nn=XXXX.gplt;
+fname=`mktemp /tmp/$n$nn`
+
 
 lastday=`find data/state/ | sort | tail -n 1 | xargs -I {} basename {} .data`
-echo $lastday
+echo "#Last day of animation is day $lastday"
+
 
 # load loop code into temporary file
 touch $fname; echo "$gplooper" >> $fname
@@ -16,6 +25,13 @@ touch $fname; echo "$gplooper" >> $fname
 runcommand="load '$fname';"
 echo "$gpheader timer_end = $lastday;  $runcommand" | gnuplot
 rm $fname
+
+# encode gif into an avi movie
+framef="/tmp/toavi_44Qe5r_"
+convert 'figures/state.gif' $framef%06d.png
+ffmpeg -i $framef%06d.png figures/state.avi
+rm -rf $framef*
+
 exit
 
 #gnuplot01#
