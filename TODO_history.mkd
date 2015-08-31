@@ -1,0 +1,37 @@
+TO DO
+============
+
+* winter-summer jump
+
+    When transitioning from winter to summer, there is a large
+    mortality event in the first day following the transition.
+    This should not happen, because it is a model-artifact.  The
+    real transition should be smooth.
+
+    - this was because of overly strong density-dependence in the nurse bee
+        population  (?? really ??)
+
+    FIXED
+
+* mortality issues
+
+    Asya's version had positive survivorship without
+    nurse bees or pollen, which makes no sense and allowed
+    automatic resurrection of the hive.  This needs to be
+    fixed, but the simple fixes lead to dead hives.
+
+    - fixed with a carefully parameterized hyperbola
+
+    FIXED
+
+* move to "new" shorter age-stage structure
+
+    But currently this always leads to extinction
+
+    FIXED
+
+* Remove redundancy between R and N(1)
+
+    FIXED
+
+* Found bug -- eggs are supposed to overwinter in egg state.
