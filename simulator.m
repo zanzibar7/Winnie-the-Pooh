@@ -105,11 +105,12 @@ for year = 0:(numyears-1)
 		break
 	end
 
-	disp('    Winter Season Dynamics'); %%%%%%%%%%%%%%%%%%%%
+	disp('    Setting up next Winter Season'); %%%%%%%%%%%%%%%%%%%
 	N = ((S(:,end)'./sum(TFSW'))*TFSW)';
 	assert( abs(sum(N) - sum(S(:,end))) < 1e-1); % check for conversion bug
 	STATE = [V(:,end); P(:,end); H(:,end); N];
 
+	disp('    Winter Season Dynamics'); %%%%%%%%%%%%%%%%%%%%
 	i = yeardays*year+summerdays+1;
 	j = yeardays*(year+1);
 	[V, P, H, R, S] = \
