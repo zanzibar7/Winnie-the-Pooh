@@ -28,6 +28,7 @@ end
 numyears = 3;
 summerdays = 240;
 yeardays = 360;
+winterdays = yeardays - summerdays;
 
 % timeseries vectors hold the daily counts for all time
 Spop=zeros(6,yeardays*numyears); % stage counts
@@ -91,10 +92,10 @@ for year = 0:(numyears-1)
 	disp(['Year ',num2str(year)]);
 
 	disp('    Summer Season Dynamics'); %%%%%%%%%%%%%%%%%%%%
-	[V, P, H, R, S] = \
-		hive_summer(year,summerdays, yeardays, STATE, SUMMERSTAGES);
 	i = yeardays*year+1;
 	j = yeardays*year+summerdays;
+	[V, P, H, R, S] = \
+		hive_summer(i-1, summerdays, STATE, SUMMERSTAGES);
 	Spop(:,i:j) = S;
 	Vpop(i:j) = V;
 	Ppop(i:j) = P;
@@ -109,10 +110,10 @@ for year = 0:(numyears-1)
 	assert( abs(sum(N) - sum(S(:,end))) < 1e-1); % check for conversion bug
 	STATE = [V(:,end); P(:,end); H(:,end); N];
 
-	[V, P, H, R, S] = \
-		hive_winter(year,summerdays,yeardays, STATE, WINTERSTAGES);
 	i = yeardays*year+summerdays+1;
 	j = yeardays*(year+1);
+	[V, P, H, R, S] = \
+		hive_winter(i-1, winterdays, STATE, WINTERSTAGES);
 	Spop([1,2,3,5],i:j) = S; % stages 4 and 6 are empty in the winter
 							 % but we want to keep a consistent shape for Spop
 	Vpop(i:j) = V;

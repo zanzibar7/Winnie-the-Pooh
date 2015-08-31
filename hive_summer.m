@@ -1,24 +1,22 @@
-function [V, P, H, R, S] = hive_summer(year, summerdays, yeardays,
-	STATE, SUMMERSTAGES)
+function [V, P, H, R, S] = hive_summer(firstday, days, STATE, STAGES)
 
+	V=zeros(1,days); % # vacant cells for each day
+	P=zeros(1,days); % # pollen cells for each day 
+	H=zeros(1,days); % # honey cells for each day
+	R=zeros(1,days); % # eggs for each day
+	S=zeros(min(size(STAGES)),days); % bee population by stage
 
-	V=zeros(1,summerdays); % # vacant cells for each day of summer
-	P=zeros(1,summerdays); % # pollen cells for each day of summer
-	H=zeros(1,summerdays); % # honey cells for each day of summer
-	R=zeros(1,summerdays); % # eggs for each day of summer
-	S=zeros(min(size(SUMMERSTAGES)),summerdays); % bee population by stage
-
-	for t = (yeardays*year+1):(yeardays*year+summerdays)
+	for i = 1:days
+		t = firstday + i;
 		% new state of hive
-		STATE = one_summer_day(STATE, t, SUMMERSTAGES);
+		STATE = one_summer_day(STATE, t, STAGES);
 
 		% extract information from state
-		i = t - yeardays*year;
 		V(i) = STATE(1);
 		P(i) = STATE(2);
 		H(i) = STATE(3);
 		R(i) = STATE(4);
-		S(:,i) = SUMMERSTAGES*STATE(4:end);
+		S(:,i) = STAGES*STATE(4:end);
 
 		%error checking
 		if STATE(2) == 0

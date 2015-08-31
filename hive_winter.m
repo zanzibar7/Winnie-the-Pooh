@@ -1,25 +1,22 @@
-function [V, P, H, R, S] = hive_winter(year, summerdays, yeardays,
-	STATE, WINTERSTAGES)
+function [V, P, H, R, S] = hive_winter(firstday, days, STATE, STAGES)
 
-	winterdays = yeardays-summerdays;
+	V=zeros(1,days); % # vacant cells for each day
+	P=zeros(1,days); % # pollen cells for each day 
+	H=zeros(1,days); % # honey cells for each day
+	R=zeros(1,days); % # eggs for each day
+	S=zeros(min(size(STAGES)),days); % bee population by stage
 
-	V=zeros(1,winterdays); % # vacant cells for each day of winter
-	P=zeros(1,winterdays); % # pollen cells for each day of winter
-	H=zeros(1,winterdays); % # honey cells for each day of winter
-	R=zeros(1,winterdays); % # eggs for each day of winter
-	S=zeros(min(size(WINTERSTAGES)),winterdays); % bee population by stage
-
-	for t = (yeardays*year+summerdays+1):(yeardays*(year+1))
+	for i = 1:days
+		t = firstday + i;
 		% new state of hive
-		STATE = one_winter_day(STATE, t, WINTERSTAGES);
+		STATE = one_winter_day(STATE, t, STAGES);
 
 		% extract information from state
-		i = t - (yeardays*year+summerdays);
 		V(i) = STATE(1);
 		P(i) = STATE(2);
 		H(i) = STATE(3);
 		R(i) = STATE(4);
-		S(:,i) = WINTERSTAGES*STATE(4:end);
+		S(:,i) = STAGES*STATE(4:end);
 
 		%error checking
 		if STATE(2) == 0
