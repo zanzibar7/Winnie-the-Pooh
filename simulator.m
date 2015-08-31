@@ -138,6 +138,6 @@ dlmwrite('data/timeseries.data',timeseries,'-append');
 
 format long;
 disp(sum(sum(Spop)));
-testval = 13592076.3176541;
-%assert( abs( testval - sum(sum(Spop))) < 5e-8 );
+testval = 13874906.3935185;
+assert( abs( testval - sum(sum(Spop))) < 5e-8 );
 format short;
