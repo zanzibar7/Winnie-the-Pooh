@@ -19,6 +19,17 @@ subheading
 
 [Link to google](https://www.google.com/)
 
++ first item
++ second item
++ last item
+
+## another list
+
+1. first
+2. second
+2. third
+2. fourth
+
 # Big heading with pound
 ## small heading with 2 pounds
 ### smaller still heading
